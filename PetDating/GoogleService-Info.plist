@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>743780427229-e98nh8o7j0jiu7nnmibq9uk421glcpvg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.743780427229-e98nh8o7j0jiu7nnmibq9uk421glcpvg</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDfEkcrtgih90gcrNxH5XqO_tzOG0J1xrQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>743780427229</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>Truongduytan.PetDating</string>
+	<key>PROJECT_ID</key>
+	<string>foodappios-73f1a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>foodappios-73f1a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:743780427229:ios:511afcdadb40e566800234</string>
+	<key>DATABASE_URL</key>
+	<string>https://foodappios-73f1a-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

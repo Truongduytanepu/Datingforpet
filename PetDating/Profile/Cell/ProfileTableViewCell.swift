@@ -182,7 +182,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         viewAgeShowMe.setUpView()
     }
     
-    // Sử dụng ActionSheetStringPicker để hiển thị UIPickerView trong action sheet
+    // Sử dụng ActionSheetStringPicker để hiển thị UIPickerView
     func showGenderPicker() {
         ActionSheetStringPicker.show(withTitle: "Select Gender", rows: gender, initialSelection: 0, doneBlock: { [weak self] picker, selectedIndex, selectedValue in
             guard let selectedGender = selectedValue as? String else { return }
@@ -215,7 +215,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
                 // lưu URL xuống cơ sở dữ liệu
                 print("Download URL: \(downloadURL)")
                 
-                // Cập nhật URL ảnh vào Realtime Database
+                // Cập nhật URL ảnh vào firebase
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/image").setValue(downloadURL.absoluteString)
                 
                 // Cập nhật ảnh trong giao diện
@@ -247,7 +247,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
                     return
                 }
                 
-                // Lưu URL vào cơ sở dữ liệu hoặc xử lý theo nhu cầu của bạn
+                // Lưu URL vào cơ sở dữ liệu
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/pet/img").setValue(downloadURL.absoluteString)
                 
                 // Cập nhật ảnh trong giao diện
@@ -299,7 +299,7 @@ extension ProfileTableViewCell: UIImagePickerControllerDelegate, UINavigationCon
             return
         }
         
-        // Kiểm tra nguồn ảnh (người dùng hoặc thú cưng) và tải lên tương ứng
+        // Kiểm tra nguồn ảnh và tải lên
         if picker == userImagePicker {
             uploadUserImage(image)
         }

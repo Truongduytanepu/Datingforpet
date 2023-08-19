@@ -85,31 +85,18 @@ class LoginViewController: UIViewController {
                 strongSelf.present(alertController, animated: true, completion: nil)
                 return
             }else{
-                
                 // Đăng nhập thành công
                 UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                //Kiểm tra xem người dùng đã có hồ sơ và thông tin về thú cưng hay chưa
                 strongSelf.userHasProfile { hasProfile, hasPetInfo in
-                    let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    if hasProfile {
-                        if hasPetInfo {
-                            // Người dùng đã có hồ sơ và thông tin về thú cưng, chuyển hướng đến MainTabbarViewController
-                            if let mainTabbarViewController = mainStoryboard.instantiateViewController(withIdentifier: "MainTabbarViewController") as? MainTabbarViewController {
-                                strongSelf.navigationController?.pushViewController(mainTabbarViewController, animated: true)
-                            }
-                        } else {
-                            // Người dùng đã có hồ sơ nhưng chưa có thông tin về thú cưng, chuyển hướng đến SetProfilePetViewController
-                            if let setPetProfile = mainStoryboard.instantiateViewController(withIdentifier: "SetProfilePetViewController") as? SetProfilePetViewController {
-                                strongSelf.navigationController?.pushViewController(setPetProfile, animated: true)
-                            }
-                        }
+                    if hasProfile && hasPetInfo {
+                        // Chuyển hướng người dùng vào màn hình chính
+                        AppDelegate.scene?.routeToMainController()
+                    } else if hasProfile {
+                        // Chuyển hướng người dùng vào màn pet
+                        AppDelegate.scene?.routeToPetProfile()
                     } else {
-                        // Người dùng chưa có hồ sơ, chuyển hướng đến SetProfilePetViewController
-                        if let setUserProfile = mainStoryboard.instantiateViewController(withIdentifier: "SetProfileUserViewController") as? SetProfileUserViewController {
-                            strongSelf.navigationController?.pushViewController(setUserProfile, animated: true)
-                        }
+                        AppDelegate.scene?.routeToUserProfile()
                     }
-                    
                 }
             }
         }

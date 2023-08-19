@@ -62,10 +62,12 @@ class SetProfilePetViewController: UIViewController {
                 if let error = error {
                     self.showAlert(withTitle: "Error", message: "Failure to save profile")
                 } else {
+                    UserDefaults.standard.set(true, forKey: "isSetProfilePet")
                     self.showAlert(withTitle: "Success", message: "Save profile successfully") {
-                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                        let setPetProfile = storyboard.instantiateViewController(withIdentifier: "MainTabbarViewController") as! MainTabbarViewController
-                        self.navigationController?.pushViewController(setPetProfile, animated: true)
+//                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                        let setPetProfile = storyboard.instantiateViewController(withIdentifier: "MainTabbarViewController") as! MainTabbarViewController
+//                        self.navigationController?.pushViewController(setPetProfile, animated: true)
+                            AppDelegate.scene?.routeToMainController()
                     }
                 }
             }
@@ -100,7 +102,7 @@ class SetProfilePetViewController: UIViewController {
                     return
                 }
                 
-                // Lưu URL vào cơ sở dữ liệu hoặc xử lý theo nhu cầu của bạn
+                // Lưu URL vào cơ sở dữ liệu
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/pet/img").setValue(downloadURL.absoluteString)
                 
                 // Cập nhật ảnh trong giao diện

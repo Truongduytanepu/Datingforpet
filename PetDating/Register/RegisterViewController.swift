@@ -74,14 +74,17 @@ class RegisterViewController: UIViewController {
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self?.present(alert, animated: true)
                 } else {
-                    let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    
-                    // Chuyển hướng đến màn hình SetProfileUserViewController
-                    if let setUserProfile = mainStoryboard.instantiateViewController(withIdentifier: "SetProfileUserViewController") as? SetProfileUserViewController {
-                        self?.navigationController?.pushViewController(setUserProfile, animated: true)
-                        
+                    UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                    if UserDefaults.standard.bool(forKey: "isSetProfileUser"){
+                        if UserDefaults.standard.bool(forKey: "isSetProfilePet"){
+                            AppDelegate.scene?.routeToMainController()
+                        }else{
+                            AppDelegate.scene?.routeToPetProfile()
+                        }
+                    }else{
+                        AppDelegate.scene?.routeToUserProfile()
                     }
-                    
+                   
                 }
             } else {
                 let alert = UIAlertController(title: "Sign Up Failure", message: "Confirmpassword went wrong", preferredStyle: .alert)

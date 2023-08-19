@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseDatabase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -23,48 +25,46 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //gán instance  window và viến window trong appdelegate
         (UIApplication.shared.delegate as? AppDelegate)?.window = window
         
-        if UserDefaults.standard.bool(forKey: "tutorialCompleted") {
-            // Người dùng đã hoàn thành màn hình hướng dẫn
-            // Kiểm tra trạng thái đăng nhập và chuyển hướng đến màn hình chính (Main Screen)
-            if UserDefaults.standard.bool(forKey: "isLoggedIn") {
-                // Người dùng đã đăng nhập
-                // Chuyển hướng đến màn hình chính (Main Screen)
-                routeToMainController()
-                
-            } else {
-                // Người dùng chưa đăng nhập
-                routeToLogin()
-                
-            }
-        } else {
-            // Người dùng chưa hoàn thành màn hình hướng dẫn
-            // Chuyển hướng đến màn hình hướng dẫn (Tutorial Screen)
+        let isTutorialCompleted = UserDefaults.standard.bool(forKey: "tutorialCompleted")
+        
+        let isSetProfileUser = UserDefaults.standard.bool(forKey: "isSetProfileUser")
+        
+        let isSetProfilePet = UserDefaults.standard.bool(forKey: "isSetProfilePet")
+        
+        let isLogin = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        
+        print("tutorialCompleted \(isTutorialCompleted)")
+        print("isLoggedIn \(isLogin)")
+        print("isSetProfileUser \(isSetProfileUser)")
+        print("isSetProfilePet \(isSetProfilePet)")
+        
+        if !isTutorialCompleted {
             routeToTutorial()
+        } else {
+            if isLogin  {
+                userHasProfile { hasProfile, hasPetInfo in
+                    if hasProfile && hasPetInfo {
+                        self.routeToMainController()
+                    } else if hasProfile {
+                        self.routeToPetProfile()
+                    } else {
+                        self.routeToUserProfile()
+                    }
+                }
+            } else {
+                routeToLogin()
+            }
         }
-    }
-    
-    func sceneDidDisconnect(_ scene: UIScene) {
-    }
-    
-    func sceneDidBecomeActive(_ scene: UIScene) {
-    }
-    
-    func sceneWillResignActive(_ scene: UIScene) {
-    }
-    
-    func sceneWillEnterForeground(_ scene: UIScene) {
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-    
-    
 }
 
 extension SceneDelegate {
     // Chuyển đến màn hình tutorial
-    private func routeToTutorial(){
+    func routeToTutorial(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let tutorialVC = storyboard.instantiateViewController(withIdentifier: "TutorialViewController")
         guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else{return}
@@ -74,7 +74,7 @@ extension SceneDelegate {
     }
     
     // Chuyển đến màn hình Login
-    private func routeToLogin(){
+    func routeToLogin(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
         let nav = UINavigationController(rootViewController: loginVC)
@@ -86,7 +86,7 @@ extension SceneDelegate {
     }
     
     //Chuyển đến màn hình main
-    private func routeToMainController(){
+    func routeToMainController(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let MainVC = storyboard.instantiateViewController(withIdentifier: "MainTabbarViewController")
         guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else{
@@ -94,8 +94,44 @@ extension SceneDelegate {
         }
         window.rootViewController = MainVC
         window.makeKeyAndVisible()
-        
+    }
+    
+    // CHuyển đến màn hình Setprofileuser
+    func routeToUserProfile(){
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let UserVC = storyboard.instantiateViewController(withIdentifier: "SetProfileUserViewController")
+        guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else{
+            return
+        }
+        window.rootViewController = UserVC
+        window.makeKeyAndVisible()
+    }
+    
+    // Chuyển đến màn hình PetProfile
+    func routeToPetProfile(){
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let petVC = storyboard.instantiateViewController(withIdentifier: "SetProfilePetViewController")
+        guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else{
+            return
+        }
+        window.rootViewController = petVC
+        window.makeKeyAndVisible()
+    }
+    
+    func userHasProfile(completion: @escaping (Bool, Bool) -> Void) {
+        if let currentUser = Auth.auth().currentUser {
+            let databaseRef = Database.database().reference()
+            databaseRef.child("user").child(currentUser.uid).observeSingleEvent(of: .value) { snapshot in
+                if let userDict = snapshot.value as? [String: Any] {
+                    let hasProfile = true
+                    let hasPetInfo = userDict["pet"] != nil
+                    completion(hasProfile, hasPetInfo)
+                } else {
+                    completion(false, false)
+                }
+            }
+        } else {
+            completion(false, false)
+        }
     }
 }
-
-

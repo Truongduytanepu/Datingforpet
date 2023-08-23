@@ -44,33 +44,30 @@ class SetProfilePetViewController: UIViewController {
     }
     
     @IBAction func saveBtnHandle(_ sender: Any) {
-            
-            // Lưu thông tin người dùng vào cơ sở dữ liệu
-            let newName = nameTF.text ?? ""
-            let newAge = Int(ageTF.text ?? "") ?? 0
-            let newtype = typeTF.text ?? ""
-            let newGender = genderTF.text ?? ""
-            
-            let userData: [String: Any] = [
-                "name": newName,
-                "age": newAge,
-                "type": newtype,
-                "gender": newGender
-            ]
+        
+        // Lưu thông tin người dùng vào cơ sở dữ liệu
+        let newName = nameTF.text ?? ""
+        let newAge = Int(ageTF.text ?? "") ?? 0
+        let newtype = typeTF.text ?? ""
+        let newGender = genderTF.text ?? ""
+        
+        let userData: [String: Any] = [
+            "name": newName,
+            "age": newAge,
+            "type": newtype,
+            "gender": newGender
+        ]
         let petRef = databaseRef.child("user").child(Auth.auth().currentUser?.uid ?? "").child("pet")
-            petRef.updateChildValues(userData) { error, _ in
-                if let error = error {
-                    self.showAlert(withTitle: "Error", message: "Failure to save profile")
-                } else {
-                    UserDefaults.standard.set(true, forKey: "isSetProfilePet")
-                    self.showAlert(withTitle: "Success", message: "Save profile successfully") {
-//                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                        let setPetProfile = storyboard.instantiateViewController(withIdentifier: "MainTabbarViewController") as! MainTabbarViewController
-//                        self.navigationController?.pushViewController(setPetProfile, animated: true)
-                            AppDelegate.scene?.routeToMainController()
-                    }
+        petRef.updateChildValues(userData) { error, _ in
+            if let error = error {
+                self.showAlert(withTitle: "Error", message: "Failure to save profile")
+            } else {
+                UserDefaults.standard.set(true, forKey: "isSetProfilePet")
+                self.showAlert(withTitle: "Success", message: "Save profile successfully") {
+                    AppDelegate.scene?.routeToMainController()
                 }
             }
+        }
     }
     
     func showAlert(withTitle title: String, message: String, completionHandler: (()->Void)? = nil){

@@ -51,9 +51,9 @@ class RegisterViewController: UIViewController {
     @IBAction func rememberCheck(_ sender: Any) {
         check = !check
         if check {
-            btnRmm.setImage(UIImage(named: "check"), for: .normal)
-        } else {
             btnRmm.setImage(UIImage(named: "unchecked"), for: .normal)
+        } else {
+            btnRmm.setImage(UIImage(named: "check"), for: .normal)
         }
     }
     
@@ -84,7 +84,7 @@ class RegisterViewController: UIViewController {
                     }else{
                         AppDelegate.scene?.routeToUserProfile()
                     }
-                   
+                    
                 }
             } else {
                 let alert = UIAlertController(title: "Sign Up Failure", message: "Confirmpassword went wrong", preferredStyle: .alert)

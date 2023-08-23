@@ -100,6 +100,7 @@ PODS:
   - InputBarAccessoryView (5.5.0):
     - InputBarAccessoryView/Core (= 5.5.0)
   - InputBarAccessoryView/Core (5.5.0)
+  - IQKeyboardManagerSwift (6.5.12)
   - Kingfisher (7.8.1)
   - leveldb-library (1.22.2)
   - MessageKit (3.8.0):
@@ -119,6 +120,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseAuth
   - FirebaseDatabase
+  - IQKeyboardManagerSwift
   - Kingfisher
   - MessageKit
   - WARangeSlider
@@ -142,6 +144,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMSessionFetcher
     - InputBarAccessoryView
+    - IQKeyboardManagerSwift
     - Kingfisher
     - leveldb-library
     - MessageKit
@@ -167,6 +170,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 9aa0ad5a7bc171f8bae016300bfcfa3fb8425749
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   InputBarAccessoryView: 1d7b0a672b36e370f01f264b3907ef39d03328e3
+  IQKeyboardManagerSwift: 371b08cb39664fb56030f5345c815a4ffc74bbc0
   Kingfisher: 63f677311d36a3473f6b978584f8a3845d023dc5
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   MessageKit: a1ba0c69ebead94029867853eb44dd05b9b3f453
@@ -174,6 +178,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   WARangeSlider: 54b3e0853b8d16c444fd539005901aecee86837d
 
-PODFILE CHECKSUM: 17c044cd1105b67c1b64ee4db99630e3e0663dab
+PODFILE CHECKSUM: 74766947e5f39e8d559108a01efe06bbfaa8f1c6
 
 COCOAPODS: 1.12.1

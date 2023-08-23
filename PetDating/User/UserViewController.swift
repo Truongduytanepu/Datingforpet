@@ -57,8 +57,6 @@ class UserViewController: UIViewController {
             layout.scrollDirection = .vertical
         }
         
-        
-        
         // Cấu hình UICollectionView, ví dụ: đăng ký cell tùy chỉnh
         collectionView.register(UINib(nibName: "TestCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TestCollectionViewCell")
         
@@ -73,40 +71,54 @@ class UserViewController: UIViewController {
     }
     
     func fetchUserData() {
-        databaseRef.child("user").observe(.value) { snapshot in
-            self.users.removeAll()
-            
-            for child in snapshot.children {
-                if let snapshot = child as? DataSnapshot,
-                   let userDict = snapshot.value as? [String: Any] {
-                    
-                    let userId = snapshot.key
-                    if userId == self.currentUserId{
-                        continue
-                    }
-                    let name = userDict["name"] as? String ?? ""
-                    let age = userDict["age"] as? Int ?? 0
-                    let location = userDict["location"] as? String ?? ""
-                    let image = userDict["image"] as? String ?? ""
-                    
-                    var pet: Pet?
-                    if let petDict = userDict["pet"] as? [String: Any],
-                       let petImage = petDict["img"] as? String {
-                        
-                        pet = Pet(image: petImage)
-                    }
-                    
-                    let user = User(userId: userId, name: name, age: age, location: location, pet: pet, image: image)
-                    self.users.append(user)
-                }
+        databaseRef.child("user").observe(.value) { [weak self] snapshot in
+            guard let userDicts = snapshot.value as? [String: [String: Any]],
+                  let currentUserShowMe = userDicts[self?.currentUserId ?? ""]?["showMe"] as? String,
+                  let currentUserSliderValueDict = userDicts[self?.currentUserId ?? ""]?["sliderValue"] as? [String: Any],
+                  let currentUserLowerValue = currentUserSliderValueDict["lower"] as? Int,
+                  let currentUserUpperValue = currentUserSliderValueDict["upper"] as? Int else {
+                return
             }
             
-            self.collectionView.reloadData()
+            var filteredUsers: [User] = []
+            
+            for (userId, userDict) in userDicts {
+                if userId == self?.currentUserId {
+                    continue
+                }
+                
+                // Kiểm tra xem userDict có chứa trường "followingIds" và "notfollow" hay không
+                let currentUserFollowingIds = userDict["followingIds"] as? [String] ?? []
+                let currentUserNotFollow = userDict["notfollow"] as? [String] ?? []
+                
+                if !currentUserFollowingIds.contains(userId) && !currentUserNotFollow.contains(userId) {
+                    if let petDict = userDict["pet"] as? [String: Any],
+                       let petAge = petDict["age"] as? Int,
+                       let petnGender = petDict["gender"] as? String {
+                        if petAge >= currentUserLowerValue && petAge <= currentUserUpperValue && currentUserShowMe == petnGender {
+                            let name = userDict["name"] as? String ?? ""
+                            let age = userDict["age"] as? Int ?? 0
+                            let location = userDict["location"] as? String ?? ""
+                            let image = userDict["image"] as? String ?? ""
+                            var pet: Pet?
+                            if let petImage = petDict["img"] as? String {
+                                pet = Pet(image: petImage)
+                            }
+                            let user = User(userId: userId, name: name, age: age, location: location, pet: pet, image: image)
+                            filteredUsers.append(user)
+                        }
+                    }
+                }
+            }
+            self?.users = filteredUsers
+            self?.collectionView.reloadData()
         }
     }
 }
 
+
 extension UserViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return users.count
     }
@@ -122,7 +134,7 @@ extension UserViewController: UICollectionViewDataSource {
     }
 }
 
-// Thêm extension UICollectionViewDelegate nếu cần xử lý các tương tác và sự kiện trong UICollectionView
+// Thêm extension UICollectionViewDelegate xử lý các tương tác và sự kiện trong UICollectionView
 extension UserViewController: UICollectionViewDelegate {
     
 }
@@ -140,5 +152,4 @@ extension UserViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
 }

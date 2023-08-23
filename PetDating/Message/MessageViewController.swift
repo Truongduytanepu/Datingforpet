@@ -13,7 +13,7 @@ class MessageViewController: UIViewController{
     
     
     @IBOutlet weak var tableView: UITableView!
-    var user: [User] = []
+    var users: [User] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -23,6 +23,10 @@ class MessageViewController: UIViewController{
         tableView.separatorStyle = .none
         tableView.cellLayoutMarginsFollowReadableWidth = false
         navigationController?.isNavigationBarHidden = true
+    }
+    
+    func setUsers(_ users: [User]) {
+        self.users = users
     }
 }
 

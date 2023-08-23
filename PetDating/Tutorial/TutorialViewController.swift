@@ -81,9 +81,9 @@ extension TutorialViewController: UICollectionViewDataSource {
             }
         }
         let attributedString = NSMutableAttributedString(string: tutorialModel.title)
-            let range = (tutorialModel.title as NSString).range(of: "friend")
-            attributedString.addAttribute(.foregroundColor, value: UIColor.systemPink, range: range)
-            cell.titleLbl.attributedText = attributedString
+        let range = (tutorialModel.title as NSString).range(of: "friend")
+        attributedString.addAttribute(.foregroundColor, value: UIColor.systemPink, range: range)
+        cell.titleLbl.attributedText = attributedString
         return cell
     }
 }

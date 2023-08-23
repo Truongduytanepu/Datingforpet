@@ -78,7 +78,7 @@ class LoginViewController: UIViewController {
             guard let strongSelf = self else { return }
             
             if let error = error {
-                // Hiển thị thông báo lỗi đăng nhập cho người dùng, ví dụ:
+                // Hiển thị thông báo lỗi đăng nhập cho người dùng
                 let alertController = UIAlertController(title: "Sign in failure", message: error.localizedDescription, preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alertController.addAction(okAction)

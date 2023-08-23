@@ -15,6 +15,8 @@ target 'PetDating' do
   pod 'ActionSheetPicker-3.0'
   pod "WARangeSlider"
   pod "MessageKit"
+  pod 'IQKeyboardManagerSwift'
+
   # Pods for PetDating
 
 end

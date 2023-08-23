@@ -73,10 +73,6 @@ class SetProfileUserViewController: UIViewController {
                 } else {
                     UserDefaults.standard.set(true, forKey: "isSetProfileUser")
                     self.showAlert(withTitle: "Success", message: "Save profile successfully") {
-//                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                        let setPetProfile = storyboard.instantiateViewController(withIdentifier: "SetProfilePetViewController") as! SetProfilePetViewController
-//
-//                        self.navigationController?.pushViewController(setPetProfile, animated: true)
                         AppDelegate.scene?.routeToPetProfile()
                     }
                 }

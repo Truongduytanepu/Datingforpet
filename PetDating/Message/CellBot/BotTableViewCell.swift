@@ -9,6 +9,10 @@ import UIKit
 
 class BotTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var timeLbl: UILabel!
+    @IBOutlet weak var chatLbl: UILabel!
+    @IBOutlet weak var nameLbl: UILabel!
+    @IBOutlet weak var imageUser: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

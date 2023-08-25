@@ -14,13 +14,15 @@ class MainTabbarViewController: ESTabBarController {
         super.viewDidLoad()
         setupTabBarAppearance()
         loadTabBarView()
-        selectedIndex = 0
         navigationController?.isNavigationBarHidden = true
     }
 
     private func setupTabBarAppearance() {
         UITabBar.appearance().backgroundColor = UIColor.white
-        UITabBar.appearance().tintColor = .clear
+//        UITabBar.appearance().tintColor = .clear
+        UITabBar.appearance().shadowImage = UIImage()
+        UITabBar.appearance().backgroundImage = UIImage()
+        
     }
 
     private func loadTabBarView() {

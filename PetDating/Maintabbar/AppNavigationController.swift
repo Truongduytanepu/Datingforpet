@@ -2,7 +2,7 @@
 //  AppNavigationController.swift
 //  PostsApp
 //
-//  Created by Hà Văn Đức on 24/05/2023.
+//  Created by Trương Duy Tân on 24/07/2023.
 //
 
 import UIKit

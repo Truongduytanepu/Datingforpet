@@ -1,5 +1,7 @@
 PODS:
   - ActionSheetPicker-3.0 (2.7.1)
+  - AnimatedCollectionViewLayout (1.1.0)
+  - CardSlider (0.1.0)
   - ESTabBarController-swift (2.8.0)
   - Firebase/Core (10.11.0):
     - Firebase/CoreOnly
@@ -115,6 +117,8 @@ PODS:
 
 DEPENDENCIES:
   - ActionSheetPicker-3.0
+  - AnimatedCollectionViewLayout
+  - CardSlider
   - ESTabBarController-swift
   - Firebase/Core
   - Firebase/Storage
@@ -128,6 +132,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - ActionSheetPicker-3.0
+    - AnimatedCollectionViewLayout
+    - CardSlider
     - ESTabBarController-swift
     - Firebase
     - FirebaseAnalytics
@@ -154,6 +160,8 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 36da254b97a09ff89679ecb8b8510bd3e5bdc773
+  AnimatedCollectionViewLayout: 0c1a38c4be115c525c887be183fc91ef65737c5d
+  CardSlider: 0a8f5f17f5a76701771794b07fdaeddc512358c8
   ESTabBarController-swift: 05593a6ad64700b03c0eb60ff625916370aa4136
   Firebase: 31d9575c124839fb5abc0db6d39511cc1dab1b85
   FirebaseAnalytics: 6c6bf99e8854475bf1fa342028841be8ecd236da
@@ -178,6 +186,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   WARangeSlider: 54b3e0853b8d16c444fd539005901aecee86837d
 
-PODFILE CHECKSUM: 74766947e5f39e8d559108a01efe06bbfaa8f1c6
+PODFILE CHECKSUM: c12516bf1e02bc4a14fa3569a5e76043520f856c
 
 COCOAPODS: 1.12.1

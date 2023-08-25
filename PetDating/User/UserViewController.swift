@@ -10,6 +10,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
 import Kingfisher
+import AnimatedCollectionViewLayout
 
 class User {
     var userId: String
@@ -49,6 +50,8 @@ class UserViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         // Thiết lập dataSource và delegate cho UICollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -66,6 +69,16 @@ class UserViewController: UIViewController {
         
         // Lấy dữ liệu người dùng từ Firebase
         fetchUserData()
+        
+        // Đổi layout của UICollectionView sang CustomCollectionViewLayout
+        let layout = CustomCollectionViewLayout()
+        collectionView.collectionViewLayout = layout
+        
+        layout.scrollDirection = .horizontal
+        layout.animator = RotateInOutAttributesAnimator()
+        
+        collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
         
         self.navigationController?.isNavigationBarHidden = true
     }
@@ -132,6 +145,7 @@ extension UserViewController: UICollectionViewDataSource {
         
         return cell
     }
+    
 }
 
 // Thêm extension UICollectionViewDelegate xử lý các tương tác và sự kiện trong UICollectionView
@@ -142,7 +156,7 @@ extension UserViewController: UICollectionViewDelegate {
 extension UserViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenSize = collectionView.bounds
-        return CGSize(width: screenSize.width, height: 350)
+        return CGSize(width: screenSize.width, height: 720)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

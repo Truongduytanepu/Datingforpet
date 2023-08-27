@@ -9,6 +9,11 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 
+protocol TestCollectionViewCellDelegate: AnyObject{
+    func matchUserHandle(user: User)
+    func unMatchUserhandle(user: User)
+}
+
 class TestCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var nameLabel: UILabel!
@@ -16,6 +21,7 @@ class TestCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var petImageView: UIImageView!
     @IBOutlet weak var containerView: UIView!
+    var delegate: TestCollectionViewCellDelegate?
     
     var user: User? {
         didSet {
@@ -50,31 +56,14 @@ class TestCollectionViewCell: UICollectionViewCell {
         
     }
     @IBAction func unMatchBtn(_ sender: Any) {
-        if let user = user, let currentUserId = Auth.auth().currentUser?.uid {
-            // Thêm UID của người dùng vào danh sách "notfollow" của người dùng đang đăng nhập
-            let userRef = Database.database().reference().child("user").child(currentUserId)
-            userRef.child("notfollow").observeSingleEvent(of: .value) { snapshot in
-                var notFollowIds = snapshot.value as? [String] ?? []
-                notFollowIds.append(user.userId)
-                userRef.child("notfollow").setValue(notFollowIds)
-            }
+        if let user = user{
+            delegate?.unMatchUserhandle(user: user)
         }
     }
+
     @IBAction func matchBtn(_ sender: Any) {
-        if let user = user, let currentUserId = Auth.auth().currentUser?.uid{
-            let userRef = Database.database().reference().child("user").child(currentUserId)
-            userRef.child("followingIds").observeSingleEvent(of: .value){ snapshot in
-                var followingIds = snapshot.value as? [String] ?? []
-                followingIds.append(user.userId)
-                userRef.child("followingIds").setValue(followingIds)
+        if let user = user {
+                delegate?.matchUserHandle(user: user)
             }
-            
-            let matchedUserRef = Database.database().reference().child("user").child(user.userId)
-            matchedUserRef.child("followerIds").observeSingleEvent(of: .value) { followerSnapshot in
-                var followerIds = followerSnapshot.value as? [String] ?? []
-                followerIds.append(currentUserId)
-                matchedUserRef.child("followerIds").setValue(followerIds)
-            }
-        }
     }
 }

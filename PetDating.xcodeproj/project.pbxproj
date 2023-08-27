@@ -40,10 +40,7 @@
 		2659114A2A8DE59700FB2B96 /* TopCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265911482A8DE59600FB2B96 /* TopCollectionViewCell.swift */; };
 		2659114B2A8DE59700FB2B96 /* TopCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265911492A8DE59600FB2B96 /* TopCollectionViewCell.xib */; };
 		2659114E2A8E102200FB2B96 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2659114D2A8E102200FB2B96 /* ChatViewController.swift */; };
-		267BFADD2A9666C400B64098 /* UserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267BFADB2A9666C400B64098 /* UserCollectionViewCell.swift */; };
-		267BFADE2A9666C400B64098 /* UserCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 267BFADC2A9666C400B64098 /* UserCollectionViewCell.xib */; };
 		267BFAE02A966EAA00B64098 /* TestUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267BFADF2A966EAA00B64098 /* TestUserViewController.swift */; };
-		267BFAE22A98765800B64098 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267BFAE12A98765800B64098 /* CustomCollectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,10 +78,7 @@
 		265911482A8DE59600FB2B96 /* TopCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCollectionViewCell.swift; sourceTree = "<group>"; };
 		265911492A8DE59600FB2B96 /* TopCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopCollectionViewCell.xib; sourceTree = "<group>"; };
 		2659114D2A8E102200FB2B96 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		267BFADB2A9666C400B64098 /* UserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewCell.swift; sourceTree = "<group>"; };
-		267BFADC2A9666C400B64098 /* UserCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserCollectionViewCell.xib; sourceTree = "<group>"; };
 		267BFADF2A966EAA00B64098 /* TestUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUserViewController.swift; sourceTree = "<group>"; };
-		267BFAE12A98765800B64098 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		4F80619600AD870007EB3A8E /* Pods_PetDating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PetDating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D65DCA2510100CA89AFCC3C /* Pods-PetDating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.release.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.release.xcconfig"; sourceTree = "<group>"; };
 		A35A252690C54FF6B4CE0EC0 /* Pods-PetDating.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.debug.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.debug.xcconfig"; sourceTree = "<group>"; };
@@ -219,7 +213,6 @@
 				2659111F2A8A6C3B00FB2B96 /* Cell */,
 				265911242A8A6C3B00FB2B96 /* UserViewController.swift */,
 				267BFADF2A966EAA00B64098 /* TestUserViewController.swift */,
-				267BFAE12A98765800B64098 /* CustomCollectionView.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -229,8 +222,6 @@
 			children = (
 				265911222A8A6C3B00FB2B96 /* TestCollectionViewCell.swift */,
 				265911232A8A6C3B00FB2B96 /* TestCollectionViewCell.xib */,
-				267BFADB2A9666C400B64098 /* UserCollectionViewCell.swift */,
-				267BFADC2A9666C400B64098 /* UserCollectionViewCell.xib */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -367,7 +358,6 @@
 				265911282A8A6C3B00FB2B96 /* TestCollectionViewCell.xib in Resources */,
 				265911472A8DB69000FB2B96 /* BotTableViewCell.xib in Resources */,
 				2659114B2A8DE59700FB2B96 /* TopCollectionViewCell.xib in Resources */,
-				267BFADE2A9666C400B64098 /* UserCollectionViewCell.xib in Resources */,
 				265911052A8A6C0E00FB2B96 /* ItemCollectionViewCell.xib in Resources */,
 				265910FA2A8A6BB600FB2B96 /* Main.storyboard in Resources */,
 				265911352A8A6D0E00FB2B96 /* Assets.xcassets in Resources */,
@@ -439,7 +429,6 @@
 				2659111A2A8A6C3400FB2B96 /* SetProfilePetViewController.swift in Sources */,
 				267BFAE02A966EAA00B64098 /* TestUserViewController.swift in Sources */,
 				265911332A8A6C4800FB2B96 /* MessageViewController.swift in Sources */,
-				267BFAE22A98765800B64098 /* CustomCollectionView.swift in Sources */,
 				265911182A8A6C3400FB2B96 /* EditProfileOwnViewController.swift in Sources */,
 				2659114E2A8E102200FB2B96 /* ChatViewController.swift in Sources */,
 				2659111B2A8A6C3400FB2B96 /* ProfileTableViewCell.swift in Sources */,
@@ -447,7 +436,6 @@
 				265911192A8A6C3400FB2B96 /* SetProfileUserViewController.swift in Sources */,
 				2659112F2A8A6C4100FB2B96 /* AppNavigationController.swift in Sources */,
 				2659114A2A8DE59700FB2B96 /* TopCollectionViewCell.swift in Sources */,
-				267BFADD2A9666C400B64098 /* UserCollectionViewCell.swift in Sources */,
 				265911272A8A6C3B00FB2B96 /* TestCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseDatabase
 
 class TopCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var nameLbl: UILabel!

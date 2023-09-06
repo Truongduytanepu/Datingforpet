@@ -29,19 +29,13 @@ class EditProfilePetViewController: UIViewController {
     func setUpNavigationbar(){
         // Hiển thị Navigationbar
         navigationController?.isNavigationBarHidden = false
-        // Tạo title cho navigation
-        let customTitle = UILabel()
-        customTitle.text = "Edit Profile"
-        customTitle.textColor = .black
-        customTitle.font = UIFont.boldSystemFont(ofSize: 18)
-        customTitle.textAlignment = .center
-        
-        // Đặt title cho navigationbar
-        navigationItem.titleView = customTitle
-        
-        // Setup nút back
         navigationController?.navigationBar.tintColor = .black
-        
+        // Custom back navigation
+        let backImage = UIImage(named: "back")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.backItem?.title = ""
+
         //setup nút Save
         saveBtn.layer.cornerRadius = saveBtn.frame.height/2
     }
@@ -58,7 +52,7 @@ class EditProfilePetViewController: UIViewController {
                     "gender" : newGender,
                     "type": newType
                 ]) { (error, databseRef) in
-                    if let error = error{
+                    if error != nil{
                         self.showAlert(withTitle: "Error", message: "Failure to update pet's profile")
                     }else{
                         self.showAlert(withTitle: "Success", message: "Update pet's profile successfully", completionHandler:{

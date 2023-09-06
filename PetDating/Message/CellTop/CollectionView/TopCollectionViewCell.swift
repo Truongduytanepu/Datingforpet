@@ -14,5 +14,7 @@ class TopCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var userImage: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
+        userImage.layer.cornerRadius = userImage.frame.height / 2
+
     }
 }

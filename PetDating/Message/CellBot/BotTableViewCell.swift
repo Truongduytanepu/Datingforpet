@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseDatabase
+import Kingfisher
 
 class BotTableViewCell: UITableViewCell {
 
@@ -13,15 +16,29 @@ class BotTableViewCell: UITableViewCell {
     @IBOutlet weak var chatLbl: UILabel!
     @IBOutlet weak var nameLbl: UILabel!
     @IBOutlet weak var imageUser: UIImageView!
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+    var databaseRef = Database.database().reference()
+    var user: UserBot?
+        
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            imageUser.layer.cornerRadius = imageUser.frame.height / 2
+        }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        override func setSelected(_ selected: Bool, animated: Bool) {
+            super.setSelected(selected, animated: animated)
+        }
+        
+        // Update this method to set the user data
+    func configure(with user: UserBot) {
+            nameLbl.text = user.name
+            
+            if let imageURL = URL(string: user.image) {
+                let imageDefault = UIImage(named: "abc")
+                
+                // Tải và hiển thị ảnh người dùng bằng Kingfisher
+                imageUser.kf.setImage(
+                    with: imageURL,
+                    placeholder: imageDefault)
+            }
+        }
     }
-    
-}

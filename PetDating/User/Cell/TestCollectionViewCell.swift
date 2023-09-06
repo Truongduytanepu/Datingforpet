@@ -12,6 +12,7 @@ import FirebaseDatabase
 protocol TestCollectionViewCellDelegate: AnyObject{
     func matchUserHandle(user: User)
     func unMatchUserhandle(user: User)
+    func petImageTapped(_ user: User)
 }
 
 class TestCollectionViewCell: UICollectionViewCell {
@@ -22,7 +23,8 @@ class TestCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var petImageView: UIImageView!
     @IBOutlet weak var containerView: UIView!
     var delegate: TestCollectionViewCellDelegate?
-    
+    var petTapgesture: UITapGestureRecognizer!
+    var indexPath: IndexPath?
     var user: User? {
         didSet {
             if let user = user {
@@ -54,16 +56,27 @@ class TestCollectionViewCell: UICollectionViewCell {
         
         containerView.backgroundColor = UIColor(red: 0.941, green: 0.949, blue: 0.961, alpha: 1)
         
+        //tapgesture
+        petTapgesture = UITapGestureRecognizer(target: self, action: #selector(petImageTapped))
+        petImageView.isUserInteractionEnabled = true
+        petImageView.addGestureRecognizer(petTapgesture)
     }
+    
+    @objc func petImageTapped() {
+        if let user = user {
+            delegate?.petImageTapped(user)
+        }
+    }
+    
     @IBAction func unMatchBtn(_ sender: Any) {
         if let user = user{
             delegate?.unMatchUserhandle(user: user)
         }
     }
-
+    
     @IBAction func matchBtn(_ sender: Any) {
         if let user = user {
-                delegate?.matchUserHandle(user: user)
-            }
+            delegate?.matchUserHandle(user: user)
+        }
     }
 }

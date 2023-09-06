@@ -17,8 +17,8 @@ target 'PetDating' do
   pod "MessageKit"
   pod 'IQKeyboardManagerSwift'
   pod 'AnimatedCollectionViewLayout'
-  pod 'CardSlider'
-
+  pod "MessageInputBar"
+  
   # Pods for PetDating
 
 end

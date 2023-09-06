@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import Kingfisher
 
 class SetProfileUserViewController: UIViewController {
     
@@ -112,8 +113,8 @@ class SetProfileUserViewController: UIViewController {
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/image").setValue(downloadURL.absoluteString)
                 
                 // Cập nhật ảnh trong giao diện
-                DispatchQueue.main.async {
-                    self.imageUser.image = image
+                if let imageURL = URL(string: downloadURL.absoluteString) {
+                    self.imageUser.kf.setImage(with: imageURL)
                 }
             }
         }

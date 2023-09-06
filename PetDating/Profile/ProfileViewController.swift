@@ -32,13 +32,19 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var currentUser: UserProfile?
     var currentPet: PetProfile?
+    var user: User?
     let gender = ["Male", "Female", "Other"]
-    
+    var isHideView = false
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         tableView.contentInsetAdjustmentBehavior = .never
-        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = false
+        if let _ = user {
+            fetchUserProfile()
+        } else {
+            fetchUser()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,7 +52,15 @@ class ProfileViewController: UIViewController {
         
         // Ẩn thanh điều hướng khi profileviewcontroller xuất hiện
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        
+    }
+    
+    func fetchUserProfile() {
+        if let user = user {
+            currentUser = UserProfile(userId: user.userId, name: user.name, age: user.age, location: user.location, gender: user.gender ?? "", image: user.image ?? "", pet: PetProfile(name: user.pet?.name ?? "", type: user.pet?.type ?? "", age: user.pet?.age ?? 0, gender: user.pet?.gender ?? "", img: user.pet?.image ?? ""))
+        }
+    }
+    
+    func fetchUser(){
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
         if let currentUser = Auth.auth().currentUser?.uid {
             let userRef = Database.database().reference().child("user").child(currentUser)
@@ -78,7 +92,6 @@ class ProfileViewController: UIViewController {
             }
         }
     }
-    
     override func viewWillDisappear(_ animated: Bool) {
         // Hiển thị thanh điều hướng khi Profileviewcontriller biến mất
         navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -97,7 +110,11 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return  1700
+        if let currentUserID = Auth.auth().currentUser?.uid, currentUser?.userId != currentUserID {
+            return 1400
+        }else{
+            return 1720
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -105,6 +122,10 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
         
         // Kiểm tra xem đã có thông tin người dùng hiện tại hay chưa
         if let currentUser = currentUser {
+            
+            if let currentUserID = Auth.auth().currentUser?.uid, currentUser.userId != currentUserID {
+                    cell.hideView()
+                }
             // Hiển thị thông tin người dùng lên cell
             cell.nameOwn.text = currentUser.name
             cell.ageOwn.text = String(currentUser.age )
@@ -129,7 +150,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
             cell.gender = gender
             cell.delegate = self
             
-            
+            // Thiết lập background cho profile
             let imgView =  UIImageView(frame: self.tableView.frame)
             let img = UIImage(named: "backgroundprofile")
             imgView.image = img
@@ -137,11 +158,9 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
             imgView.contentMode = .scaleToFill
             cell.cellBackgroundView.addSubview(imgView)
             cell.cellBackgroundView.sendSubviewToBack(imgView)
-            //            tableView.layer.zPosition = 1
             tableView.backgroundColor = .clear
-            
-            
         }
+        
         return cell
     }
 }
@@ -170,6 +189,13 @@ extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
 }
 
 extension ProfileViewController: ProfileTableViewCellDelegate{
+    func showMeValueChange(selectedGender: String) {
+        tableView.reloadData()
+    }
+    
+    func sliderValueChange(lowerValue: Int, upperValue: Int) {
+        tableView.reloadData()
+    }
     
     func editBtnTapped(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)

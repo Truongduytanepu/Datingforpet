@@ -19,22 +19,32 @@ class User {
     var location: String
     var pet: Pet?
     var image: String?
+    var gender: String?
     
-    init(userId: String, name: String, age: Int, location: String, pet: Pet? = nil, image: String? = nil) {
+    init(userId: String, name: String, age: Int, location: String, pet: Pet? = nil, image: String? = nil, gender: String? = nil) {
         self.userId = userId
         self.name = name
         self.age = age
         self.location = location
         self.pet = pet
         self.image = image
+        self.gender = gender
     }
 }
 
 class Pet {
     var image: String?
+    var name: String?
+    var age: Int?
+    var gender: String?
+    var type: String?
     
-    init(image: String? = nil) {
+    init(image: String? = nil, name: String? = nil, age: Int? = nil, gender: String? = nil, type: String? = nil) {
         self.image = image
+        self.name = name
+        self.age = age
+        self.gender = gender
+        self.type = type
     }
 }
 
@@ -47,18 +57,24 @@ class UserViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ẩn thanh điều hướng khi profileviewcontroller xuất hiện
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
         // Thiết lập dataSource và delegate cho UICollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
-        
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .vertical
-        }
         
         // Cấu hình UICollectionView, ví dụ: đăng ký cell tùy chỉnh
         collectionView.register(UINib(nibName: "TestCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TestCollectionViewCell")
@@ -66,9 +82,6 @@ class UserViewController: UIViewController {
         // Khởi tạo database reference và storage reference
         databaseRef = Database.database().reference()
         storageRef = Storage.storage().reference()
-        
-        // Lấy dữ liệu người dùng từ Firebase
-        
         
         // Đổi layout của UICollectionView sang CustomCollectionViewLayout
         let layout = AnimatedCollectionViewLayout()
@@ -82,9 +95,26 @@ class UserViewController: UIViewController {
         
         fetchUserData()
         
+        checkChange()
+        
         self.navigationController?.isNavigationBarHidden = true
     }
     
+    func checkChange(){
+        
+        // Check lại giá trị của slider và shiwme
+        if let currentUserId = currentUserId {
+            databaseRef.child("user").child(currentUserId).child("sliderValue").observe(.value) { [weak self] snapshot in
+                self?.fetchUserData()
+            }
+        }
+        
+        if let currentUserId = currentUserId {
+            databaseRef.child("user").child(currentUserId).child("showMe").observe(.value) { [weak self] snapshot in
+                self?.fetchUserData()
+            }
+        }
+    }
     func fetchUserData() {
         databaseRef.child("user").observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let userDicts = snapshot.value as? [String: [String: Any]],
@@ -126,22 +156,25 @@ class UserViewController: UIViewController {
                             let age = userDict["age"] as? Int ?? 0
                             let location = userDict["location"] as? String ?? ""
                             let image = userDict["image"] as? String ?? ""
+                            let gender = userDict["gender"] as? String ?? ""
                             var pet: Pet?
-                            if let petImage = petDict["img"] as? String {
-                                pet = Pet(image: petImage)
+                            if let petImage = petDict["img"] as? String,
+                               let petName = petDict["name"] as? String,
+                               let petAge = petDict["age"] as? Int,
+                               let petGender = petDict["gender"] as? String,
+                               let petType = petDict["type"] as? String{
+                                pet = Pet(image: petImage, name: petName, age: petAge, gender: petGender, type: petType)
                             }
-                            let user = User(userId: userId, name: name, age: age, location: location, pet: pet, image: image)
+                            let user = User(userId: userId, name: name, age: age, location: location, pet: pet, image: image, gender: gender)
                             fetchedUsers.append(user)
                         }
                     }
                 }
             }
-            
             self?.users = fetchedUsers
             self?.collectionView.reloadData()
         }
     }
-
 }
 
 
@@ -157,8 +190,8 @@ extension UserViewController: UICollectionViewDataSource {
         let user = users[indexPath.item]
         
         cell.delegate = self
-        
         cell.user = user
+        cell.indexPath = indexPath
         
         return cell
     }
@@ -186,6 +219,17 @@ extension UserViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension UserViewController: TestCollectionViewCellDelegate{
+    
+    func petImageTapped(_ user: User) {
+        let profileStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let profileVC = profileStoryboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        profileVC.isHideView = true
+        profileVC.user = user
+        profileVC.fetchUserProfile()
+        navigationController?.pushViewController(profileVC, animated: true)
+    }
+    
+    
     func matchUserHandle(user: User) {
         if let currentUserId = Auth.auth().currentUser?.uid{
             let userRef = Database.database().reference().child("user").child(currentUserId)
@@ -224,5 +268,30 @@ extension UserViewController: TestCollectionViewCellDelegate{
                 }
             }
         }
+    }
+}
+
+extension UserViewController: ProfileTableViewCellDelegate{
+    func showMeValueChange(selectedGender: String) {
+        if let currentUserId = currentUserId {
+            let showMeRef = databaseRef.child("user").child(currentUserId).child("showMe")
+            showMeRef.setValue(selectedGender)
+        }
+    }
+    
+    func sliderValueChange(lowerValue: Int, upperValue: Int) {
+        if let currentUserId = currentUserId {
+            let sliderValueRef = databaseRef.child("user").child(currentUserId).child("sliderValue")
+            let updatedSliderValue = ["lower": lowerValue, "upper": upperValue]
+            sliderValueRef.setValue(updatedSliderValue)
+        }
+    }
+    
+    func editBtnTapped() {
+        
+    }
+    
+    func editBtnTappedPet() {
+        
     }
 }

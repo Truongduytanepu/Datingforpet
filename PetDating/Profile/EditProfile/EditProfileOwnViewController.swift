@@ -31,15 +31,12 @@ class EditProfileOwnViewController: UIViewController {
     func setUpNavigationbar(){
         // Hiển thị Navigationbar
         navigationController?.isNavigationBarHidden = false
-        // Tạo title cho navigation
-        let customTitle = UILabel()
-        customTitle.text = "Edit Profile"
-        customTitle.textColor = .black
-        customTitle.font = UIFont.boldSystemFont(ofSize: 18)
-        customTitle.textAlignment = .center
         
-        // Đặt title cho navigationbar
-        navigationItem.titleView = customTitle
+        // Custom back navigation
+        let backImage = UIImage(named: "back")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.backItem?.title = ""
         
         // Setup nút back
         navigationController?.navigationBar.tintColor = .black
@@ -61,7 +58,7 @@ class EditProfileOwnViewController: UIViewController {
                     "location" : newLocation,
                     "gender": newGender
                 ]) { (error, databseRef) in
-                    if let error = error{
+                    if error != nil{
                         self.showAlert(withTitle: "Error", message: "Failure to update profile")
                     }else{
                         self.showAlert(withTitle: "Success", message: "Update profile successfully", completionHandler:{

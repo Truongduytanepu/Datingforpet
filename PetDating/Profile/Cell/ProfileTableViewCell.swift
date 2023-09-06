@@ -11,13 +11,22 @@ import WARangeSlider
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import Kingfisher
 
 protocol ProfileTableViewCellDelegate: AnyObject {
     func editBtnTapped()
     func editBtnTappedPet()
+    func sliderValueChange(lowerValue: Int, upperValue: Int)
+    func showMeValueChange(selectedGender: String)
 }
 
 class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDataSource {
+    
+    @IBOutlet weak var view: UIView!
+    @IBOutlet weak var discoveryLbl: UILabel!
+    @IBOutlet weak var editPetImage: UIButton!
+    @IBOutlet weak var editUserImage: UIButton!
+    @IBOutlet weak var editBtn2: UIButton!
     @IBOutlet weak var cellBackgroundView: UIView!
     @IBOutlet weak var rangeSlider: RangeSlider!
     @IBOutlet weak var showGender: UIButton!
@@ -51,6 +60,8 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     var gender: [String]!
     var currentUser: UserProfile?
     var delegate: ProfileTableViewCellDelegate?
+    var isAddingUserImage = false
+    var isAddingPetImage = false
     private var userImagePicker: UIImagePickerController = UIImagePickerController()
     private var petImagePicker:UIImagePickerController = UIImagePickerController()
     private let storage = Storage.storage().reference()
@@ -70,7 +81,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         rangeSlider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         databaseRef = Database.database().reference()
         setupImagePickers()
-        
+    
         // Lấy giá trị slider trong firebase
         if let currentUser = Auth.auth().currentUser {
             databaseRef.child("user/\(currentUser.uid)/sliderValue").observeSingleEvent(of: .value) { snapshot in
@@ -119,6 +130,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         // Cập nhật giá trị slider vào Firebase
         if let currentUser = Auth.auth().currentUser {
             databaseRef.child("user/\(currentUser.uid)/sliderValue").setValue(["lower": lowerValue, "upper": upperValue])
+            self.delegate?.sliderValueChange(lowerValue: lowerValue, upperValue: upperValue)
         }
     }
     
@@ -149,20 +161,22 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     
     // Chỉnh sửa ảnh thú cưng
     @IBAction func editImagePet(_ sender: Any) {
+        isAddingPetImage = true
+        isAddingUserImage = false
         self.window?.rootViewController?.present(petImagePicker, animated: true, completion: nil)
     }
     
     // Chỉnh sửa ảnh người dùng
     @IBAction func editImageUser(_ sender: Any) {
+        isAddingPetImage = false
+        isAddingUserImage = true
         self.window?.rootViewController?.present(userImagePicker, animated: true, completion: nil)
     }
-    
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    
+
     func setUpUI(){
+        let attributedText = NSAttributedString(string: "Edit", attributes: [
+                    NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+                ])
         imageOwn.layer.cornerRadius = imageOwn.frame.height / 2
         viewImageOwn.layer.cornerRadius = viewImageOwn.frame.height / 2
         imagePet.layer.cornerRadius = 10
@@ -170,6 +184,8 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         logOut.layer.cornerRadius = logOut.frame.height / 2
         logOut.layer.borderColor = UIColor(red: 0.766, green: 0.766, blue: 0.766, alpha: 1).cgColor
         viewImagePet.layer.cornerRadius = 30
+        editBtn1.setAttributedTitle(attributedText, for: .normal)
+        editBtn2.setAttributedTitle(attributedText, for: .normal)
         viewAge.setUpView()
         viewName.setUpView()
         viewGender.setUpView()
@@ -191,6 +207,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
             
             if let currentUser = Auth.auth().currentUser{
                 self?.databaseRef.child("user/\(currentUser.uid)/showMe").setValue(selectedGender)
+                self?.delegate?.showMeValueChange(selectedGender: selectedGender)
             }
         }, cancel: nil, origin: self)
     }
@@ -280,9 +297,22 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return gender[row]
     }
+    
+    func hideView(){
+        editBtn1.isHidden = true
+        editBtn2.isHidden = true
+        editUserImage.isHidden = true
+        editPetImage.isHidden = true
+        discoveryLbl.isHidden = true
+        viewShowMe.isHidden = true
+        viewAgeShowMe.isHidden = true
+        view.isHidden = true
+        logOut.isHidden = true
+    }
 }
 
 extension UIView {
+    
     func setUpView() {
         self.layer.borderColor = UIColor(red: 0.766, green: 0.766, blue: 0.766, alpha: 1).cgColor
         self.layer.borderWidth = 1.0
@@ -291,7 +321,6 @@ extension UIView {
 }
 
 extension ProfileTableViewCell: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else {

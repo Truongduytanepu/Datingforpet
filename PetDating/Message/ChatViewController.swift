@@ -32,6 +32,7 @@ class ChatViewController: MessagesViewController {
     var messages: [MessageType] = []
     var matchId: String = ""
     let currentUser = Auth.auth().currentUser?.uid
+    var receiverImageURL: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,8 +43,8 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate = self
-        
         // Reload dữ liệu để hiển thị tin nhắn
+        fetchParticipantImage()
         messagesCollectionView.reloadData()
         print("❤️ \(matchId)")
     }
@@ -149,6 +150,45 @@ class ChatViewController: MessagesViewController {
         self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
         self.navigationController?.navigationBar.backItem?.title = ""
     }
+    
+    func fetchParticipantImage() {
+        
+        let databaseRef = Database.database().reference()
+        let participantsRef = databaseRef.child("matches").child(matchId).child("participants")
+        
+        // Lấy danh sách các participants
+        participantsRef.observeSingleEvent(of: .value) { [weak self] (snapshot) in
+            guard let self = self, let participantsData = snapshot.value as? [String: Any] else {
+                return
+            }
+            
+            for (participantId, _) in participantsData {
+                if participantId != self.currentUser {
+                    // Lấy thông tin người dùng từ participantId và cập nhật ảnh của người nhận
+                    self.fetchUserImage(for: participantId) { (imageURL) in
+                        // Cập nhật ảnh người nhận
+                        self.receiverImageURL = imageURL
+                        // Reload giao diện hoặc cập nhật ảnh người nhận theo nhu cầu của bạn
+                    }
+                }
+            }
+        }
+    }
+    
+    func fetchUserImage(for userId: String, completion: @escaping (String) -> Void) {
+        let databaseRef = Database.database().reference()
+        let userRef = databaseRef.child("user").child(userId)
+        
+        userRef.observeSingleEvent(of: .value) { (snapshot) in
+            if let userData = snapshot.value as? [String: Any],
+               let imageURL = userData["image"] as? String {
+                print("Image URL: \(imageURL)") // Check if you are getting the imageURL correctly.
+                completion(imageURL)
+            } else {
+                print("Error fetching user data for userId: \(userId)")
+            }
+        }
+    }
 }
 
 extension ChatViewController: MessagesDataSource{
@@ -190,9 +230,7 @@ extension Date {
 
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        // Xử lý việc gửi tin nhắn ở đây, ví dụ:
         sendMessage(text)
-        inputBar.inputTextView.text = ""
         // Xóa nội dung trong trường nhập sau khi gửi
         
         print("🔴 Send button pressed with text: \(text)")
@@ -207,6 +245,6 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
     }
     
     func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
-        // Xử lý sự kiện vuốt trường nhập tại đây (nếu cần)
+        // Xử lý sự kiện vuốt trường nhập tại đây
     }
 }

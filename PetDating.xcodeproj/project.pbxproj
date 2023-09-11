@@ -39,6 +39,7 @@
 		2659114A2A8DE59700FB2B96 /* TopCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265911482A8DE59600FB2B96 /* TopCollectionViewCell.swift */; };
 		2659114B2A8DE59700FB2B96 /* TopCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265911492A8DE59600FB2B96 /* TopCollectionViewCell.xib */; };
 		2659114E2A8E102200FB2B96 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2659114D2A8E102200FB2B96 /* ChatViewController.swift */; };
+		268CC9112AAAEDDA00DB44DC /* MatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268CC9102AAAEDDA00DB44DC /* MatchViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		265911482A8DE59600FB2B96 /* TopCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCollectionViewCell.swift; sourceTree = "<group>"; };
 		265911492A8DE59600FB2B96 /* TopCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopCollectionViewCell.xib; sourceTree = "<group>"; };
 		2659114D2A8E102200FB2B96 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		268CC9102AAAEDDA00DB44DC /* MatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewController.swift; sourceTree = "<group>"; };
 		4F80619600AD870007EB3A8E /* Pods_PetDating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PetDating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D65DCA2510100CA89AFCC3C /* Pods-PetDating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.release.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.release.xcconfig"; sourceTree = "<group>"; };
 		A35A252690C54FF6B4CE0EC0 /* Pods-PetDating.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.debug.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.debug.xcconfig"; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 		265910E22A8A6A2E00FB2B96 /* PetDating */ = {
 			isa = PBXGroup;
 			children = (
+				268CC9122AAAEDE300DB44DC /* Match */,
 				265911312A8A6C4800FB2B96 /* Message */,
 				2659112A2A8A6C4100FB2B96 /* Maintabbar */,
 				2659111E2A8A6C3B00FB2B96 /* User */,
@@ -267,6 +270,14 @@
 				265911482A8DE59600FB2B96 /* TopCollectionViewCell.swift */,
 			);
 			path = CollectionView;
+			sourceTree = "<group>";
+		};
+		268CC9122AAAEDE300DB44DC /* Match */ = {
+			isa = PBXGroup;
+			children = (
+				268CC9102AAAEDDA00DB44DC /* MatchViewController.swift */,
+			);
+			path = Match;
 			sourceTree = "<group>";
 		};
 		A17FF689CDF91A768E82970F /* Frameworks */ = {
@@ -426,6 +437,7 @@
 				2659114E2A8E102200FB2B96 /* ChatViewController.swift in Sources */,
 				2659111B2A8A6C3400FB2B96 /* ProfileTableViewCell.swift in Sources */,
 				265911172A8A6C3400FB2B96 /* EditProfilePetViewController.swift in Sources */,
+				268CC9112AAAEDDA00DB44DC /* MatchViewController.swift in Sources */,
 				265911192A8A6C3400FB2B96 /* SetProfileUserViewController.swift in Sources */,
 				2659114A2A8DE59700FB2B96 /* TopCollectionViewCell.swift in Sources */,
 				265911272A8A6C3B00FB2B96 /* TestCollectionViewCell.swift in Sources */,

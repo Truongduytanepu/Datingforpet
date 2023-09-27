@@ -84,7 +84,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         rangeSlider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         databaseRef = Database.database().reference()
         setupImagePickers()
-    
+        
         // Lấy giá trị slider trong firebase
         if let currentUser = Auth.auth().currentUser {
             databaseRef.child("user/\(currentUser.uid)/sliderValue").observeSingleEvent(of: .value) { snapshot in
@@ -179,11 +179,11 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         isAddingUserImage = true
         self.window?.rootViewController?.present(userImagePicker, animated: true, completion: nil)
     }
-
+    
     func setUpUI(){
         let attributedText = NSAttributedString(string: "Edit", attributes: [
-                    NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
-                ])
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ])
         imageOwn.layer.cornerRadius = imageOwn.frame.height / 2
         viewImageOwn.layer.cornerRadius = viewImageOwn.frame.height / 2
         imagePet.layer.cornerRadius = 10

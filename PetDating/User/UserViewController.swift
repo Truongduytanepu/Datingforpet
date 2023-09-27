@@ -13,6 +13,7 @@ import Kingfisher
 import AnimatedCollectionViewLayout
 import MBProgressHUD
 import SCLAlertView
+import Reachability
 
 struct User {
     var userId: String
@@ -110,7 +111,6 @@ class UserViewController: UIViewController {
     
     func fetchUserData() {
         showLoading(isShow: true)
-        
         databaseRef.child("user").observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let userDicts = snapshot.value as? [String: [String: Any]],
                   let currentUserId = self?.currentUserId else {

@@ -988,7 +988,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MIG-gR-QFA">
                                 <rect key="frame" x="61" y="134" width="308" height="400"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pexels-julissa-helmuth-3196887" translatesAutoresizingMaskIntoConstraints="NO" id="CcM-vN-9vz">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="image-gallery" translatesAutoresizingMaskIntoConstraints="NO" id="CcM-vN-9vz">
                                         <rect key="frame" x="0.0" y="0.0" width="308" height="400"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="400" id="20C-gO-Mzm"/>
@@ -1105,6 +1105,70 @@
             </objects>
             <point key="canvasLocation" x="3307" y="-28"/>
         </scene>
+        <!--Not Network View Controller-->
+        <scene sceneID="OQc-sF-B0j">
+            <objects>
+                <viewController storyboardIdentifier="NotNetworkViewController" id="eO9-oP-RY3" customClass="NotNetworkViewController" customModule="PetDating" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NG4-v5-tVG">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no-signal" translatesAutoresizingMaskIntoConstraints="NO" id="5Um-rv-Khj">
+                                <rect key="frame" x="115" y="259" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="U3j-b9-I4B"/>
+                                    <constraint firstAttribute="height" constant="200" id="VQa-oD-011"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No network connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WAv-81-FKE">
+                                <rect key="frame" x="91.666666666666671" y="489" width="246.66666666666663" height="28.666666666666629"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please check your network connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qqm-1V-oxc">
+                                <rect key="frame" x="68" y="527.66666666666663" width="294" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JFN-PK-BOy">
+                                <rect key="frame" x="165" y="568.66666666666663" width="100" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="TWU-tv-ESL"/>
+                                    <constraint firstAttribute="height" constant="40" id="d81-UA-Vpu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Retry">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="retryBtn:" destination="eO9-oP-RY3" eventType="touchUpInside" id="yRB-W2-jje"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="kiN-lV-ZsR"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="5Um-rv-Khj" firstAttribute="top" secondItem="kiN-lV-ZsR" secondAttribute="top" constant="200" id="BLm-KZ-suL"/>
+                            <constraint firstItem="WAv-81-FKE" firstAttribute="top" secondItem="5Um-rv-Khj" secondAttribute="bottom" constant="30" id="Dzd-ai-VIy"/>
+                            <constraint firstItem="WAv-81-FKE" firstAttribute="centerX" secondItem="5Um-rv-Khj" secondAttribute="centerX" id="HiP-E8-SqA"/>
+                            <constraint firstItem="JFN-PK-BOy" firstAttribute="top" secondItem="Qqm-1V-oxc" secondAttribute="bottom" constant="20" id="NQS-ut-3XA"/>
+                            <constraint firstItem="JFN-PK-BOy" firstAttribute="centerX" secondItem="Qqm-1V-oxc" secondAttribute="centerX" id="U7Q-f7-gfP"/>
+                            <constraint firstItem="Qqm-1V-oxc" firstAttribute="centerX" secondItem="WAv-81-FKE" secondAttribute="centerX" id="jJf-Bk-qjl"/>
+                            <constraint firstItem="5Um-rv-Khj" firstAttribute="centerX" secondItem="kiN-lV-ZsR" secondAttribute="centerX" id="oRy-7a-DdI"/>
+                            <constraint firstItem="Qqm-1V-oxc" firstAttribute="top" secondItem="WAv-81-FKE" secondAttribute="bottom" constant="10" id="zr0-Z6-lLS"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="retry" destination="JFN-PK-BOy" id="KKG-eC-mcZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mJa-wo-54I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4067" y="-28"/>
+        </scene>
         <!--Chat View Controller-->
         <scene sceneID="bus-OY-Afl">
             <objects>
@@ -1128,7 +1192,8 @@
         <image name="facebook" width="24" height="24"/>
         <image name="google" width="24" height="24"/>
         <image name="hide" width="24" height="24"/>
-        <image name="pexels-julissa-helmuth-3196887" width="4000" height="6000"/>
+        <image name="image-gallery" width="512" height="512"/>
+        <image name="no-signal" width="512" height="512"/>
         <image name="unchecked" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

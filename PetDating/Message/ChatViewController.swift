@@ -42,6 +42,16 @@ class ChatViewController: MessagesViewController {
         messageInputBar.delegate = self
         messageInputBar.sendButton.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
         messagesCollectionView.reloadData()
+        
+        if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
+            layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
+            layout.textMessageSizeCalculator.incomingAvatarSize = .zero
+            layout.photoMessageSizeCalculator.outgoingAvatarSize = .zero
+            layout.photoMessageSizeCalculator.incomingAvatarSize = .zero
+            layout.attributedTextMessageSizeCalculator.incomingAvatarSize = .zero
+            layout.attributedTextMessageSizeCalculator.outgoingAvatarSize = .zero
+            layout.attributedTextMessageSizeCalculator.avatarLeadingTrailingPadding = .zero
+        }
     }
     
     // lắng nghe tin nhắn từ firebase
@@ -162,16 +172,23 @@ extension ChatViewController: MessagesLayoutDelegate, MessagesDisplayDelegate {
         return isFromCurrentSender(message: message) ? pinkColor : greyColor
     }
     
-    func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-        return CGSize.zero
-    }
-    
     func messageContainerSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         return CGSize(width: 250, height: 50)
     }
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
         return isFromCurrentSender(message: message) ? .white : .black
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        avatarView.isHidden = true
+    }
+    func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return .zero
+    }
+    
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        return .bubble
     }
 }
 
@@ -196,3 +213,4 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
     }
 }
+

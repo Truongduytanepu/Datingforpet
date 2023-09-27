@@ -74,7 +74,7 @@ class SetProfilePetViewController: UIViewController {
                 alertView.showError("Error", subTitle: "Failure to save profile.")
             } else {
                 UserDefaults.standard.set(true, forKey: "isSetProfilePet")
-                    AppDelegate.scene?.routeToMainController()
+                AppDelegate.scene?.routeToMainController()
             }
         }
     }

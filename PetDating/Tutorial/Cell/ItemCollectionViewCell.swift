@@ -37,6 +37,6 @@ class ItemCollectionViewCell: UICollectionViewCell {
         self.nextCallback = nextCallback
         tutorialImage.image = UIImage(named: image)
         titleLbl.text = title
-
+        
     }
 }

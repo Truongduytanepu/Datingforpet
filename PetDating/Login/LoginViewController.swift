@@ -55,7 +55,7 @@ class LoginViewController: UIViewController {
         setUpButton(button: googleBtn)
         signInBtn.layer.cornerRadius = 25
     }
-
+    
     func setUpButton(button: UIButton) {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.gray.cgColor

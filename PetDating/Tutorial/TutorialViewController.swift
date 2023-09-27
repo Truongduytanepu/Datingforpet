@@ -87,7 +87,6 @@ extension TutorialViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - UICollectionViewDelegate:
 extension TutorialViewController: UICollectionViewDelegate {
     
 }

@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import Reachability
+import SCLAlertView
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -21,39 +23,43 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // khởi tạo window từ window Scene
         
         window = UIWindow(windowScene: windowScene)
+        // Khởi tạo Reachability
+        let reachability = try? Reachability()
         
         //gán instance  window và viến window trong appdelegate
         (UIApplication.shared.delegate as? AppDelegate)?.window = window
         
-        let isTutorialCompleted = UserDefaults.standard.bool(forKey: "tutorialCompleted")
-        
-        let isSetProfileUser = UserDefaults.standard.bool(forKey: "isSetProfileUser")
-        
-        let isSetProfilePet = UserDefaults.standard.bool(forKey: "isSetProfilePet")
-        
-        let isLogin = UserDefaults.standard.bool(forKey: "isLoggedIn")
-        
-        print("tutorialCompleted \(isTutorialCompleted)")
-        print("isLoggedIn \(isLogin)")
-        print("isSetProfileUser \(isSetProfileUser)")
-        print("isSetProfilePet \(isSetProfilePet)")
-        
-        if !isTutorialCompleted {
-            routeToTutorial()
-        } else {
-            if isLogin  {
-                userHasProfile { hasProfile, hasPetInfo in
-                    if hasProfile && hasPetInfo {
-                        self.routeToMainController()
-                    } else if hasProfile {
-                        self.routeToPetProfile()
-                    } else {
-                        self.routeToUserProfile()
-                    }
-                }
+        if isNetworkReachable() {
+            let isTutorialCompleted = UserDefaults.standard.bool(forKey: "tutorialCompleted")
+            let isSetProfileUser = UserDefaults.standard.bool(forKey: "isSetProfileUser")
+            let isSetProfilePet = UserDefaults.standard.bool(forKey: "isSetProfilePet")
+            let isLogin = UserDefaults.standard.bool(forKey: "isLoggedIn")
+            
+            print("tutorialCompleted \(isTutorialCompleted)")
+            print("isLoggedIn \(isLogin)")
+            print("isSetProfileUser \(isSetProfileUser)")
+            print("isSetProfilePet \(isSetProfilePet)")
+            
+            if !isTutorialCompleted {
+                routeToTutorial()
             } else {
-                routeToLogin()
+                if isLogin {
+                    userHasProfile { hasProfile, hasPetInfo in
+                        if hasProfile && hasPetInfo {
+                            self.routeToMainController()
+                        } else if hasProfile {
+                            self.routeToPetProfile()
+                        } else {
+                            self.routeToUserProfile()
+                        }
+                    }
+                } else {
+                    routeToLogin()
+                }
             }
+        } else {
+            print("😂")
+            routeToNotNetwork()
         }
     }
     
@@ -82,7 +88,6 @@ extension SceneDelegate {
         guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else{return}
         window.rootViewController = nav
         window.makeKeyAndVisible()
-        
     }
     
     //Chuyển đến màn hình main
@@ -133,5 +138,20 @@ extension SceneDelegate {
         } else {
             completion(false, false)
         }
+    }
+    
+    func routeToNotNetwork() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let abcVC = storyboard.instantiateViewController(withIdentifier: "NotNetworkViewController")
+        guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else {
+            return
+        }
+        window.rootViewController = abcVC
+        window.makeKeyAndVisible()
+    }
+    
+    func isNetworkReachable() -> Bool {
+        let reachability = try? Reachability()
+        return reachability?.isReachable ?? false
     }
 }

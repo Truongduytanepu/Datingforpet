@@ -53,16 +53,16 @@ class BotTableViewCell: UITableViewCell {
         }
         
         if let fetchFunction = fetchLastMessage {
-                // Gọi hàm fetchLastMessage để lấy tin nhắn cuối cùng
-                fetchFunction(matchId) { lastMessage in
-                    DispatchQueue.main.async {
-                        if let lastMessage = lastMessage, !lastMessage.isEmpty {
-                            self.chatLbl.text = lastMessage
-                        } else {
-                            self.chatLbl.text = "No message"
-                        }
+            // Gọi hàm fetchLastMessage để lấy tin nhắn cuối cùng
+            fetchFunction(matchId) { lastMessage in
+                DispatchQueue.main.async {
+                    if let lastMessage = lastMessage, !lastMessage.isEmpty {
+                        self.chatLbl.text = lastMessage
+                    } else {
+                        self.chatLbl.text = "No message"
                     }
                 }
             }
+        }
     }
 }

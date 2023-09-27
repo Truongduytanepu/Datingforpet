@@ -9,6 +9,12 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import FirebaseDatabase
+import MBProgressHUD
+import SCLAlertView
+
+protocol MessageDisplay{
+    func showLoading(isShow: Bool)
+}
 
 struct UserBot {
     var uid: String
@@ -21,35 +27,42 @@ class MessageViewController: UIViewController{
     @IBOutlet weak var tableView: UITableView!
     var users: [UserBot] = []
     var matchIds: [String] = []
-    var topTableViewCell: TopTableViewCell?
     var databaseRef = Database.database().reference()
     let currentUser = Auth.auth().currentUser?.uid
     var userMatchIDs: [String] = []
-    var receiverImageURL: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UINib(nibName: "TopTableViewCell", bundle: nil), forCellReuseIdentifier: "TopTableViewCell")
         tableView.register(UINib(nibName: "BotTableViewCell", bundle: nil), forCellReuseIdentifier: "BotTableViewCell")
         tableView.separatorStyle = .none
         tableView.cellLayoutMarginsFollowReadableWidth = false
-        navigationController?.isNavigationBarHidden = true
         fetchDataMatchUser()
+        self.navigationItem.title = "Chat"
+        if let navigationBar = self.navigationController?.navigationBar {
+            let navigationTitleFont = UIFont.boldSystemFont(ofSize: 24.0)
+            navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont]
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        showLoading(isShow: true)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showLoading(isShow: false)
     }
     
     func fetchDataMatchUser() {
         let group = DispatchGroup() // Khởi tạo Dispatch Group
-
+        showLoading(isShow: true)
         userMatched { userMatched in
             if let userMatched = userMatched {
                 self.userMatchIDs = userMatched
-                self.databaseRef.child("matches").observeSingleEvent(of: .value) { snapshot,error  in
+                self.databaseRef.child("matches").observeSingleEvent(of: .value) { [weak self] snapshot, error in
                     if let error = error {
                         print("Error fetching matches: \(error)")
                         return
@@ -58,48 +71,52 @@ class MessageViewController: UIViewController{
                         for (matchId, matchData) in matches {
                             if let participants = matchData["participants"] as? [String] {
                                 // Kiểm tra xem cả currentUser và userMatched đều tồn tại trong participants
-                                if participants.contains(self.currentUser ?? "") && participants.contains(where: { userMatched.contains($0) }) {
-                                    self.matchIds.append(matchId)
-                                    print("Common Participants:")
+                                if participants.contains(self?.currentUser ?? "") && participants.contains(where: { userMatched.contains($0) }) {
+                                    // Thêm matchId vào danh sách
+                                    self?.matchIds.append(matchId)
+                                    // Lặp qua danh sách participants
                                     for participant in participants {
-                                        if participant == self.currentUser {
-                                            continue
-                                        } else {
-                                            group.enter() // Bắt đầu một tác vụ mới trong Dispatch Group
-
-                                            self.fetchUserBot(withUID: participant) { user in
-                                                if let user = user {
-                                                    DispatchQueue.main.async {
-                                                        self.users.append(user)
-
-                                                        // Khi dữ liệu của một người dùng đã được lấy, thoát khỏi Dispatch Group
-                                                        group.leave()
-                                                    }
-                                                } else {
-                                                    // Trong trường hợp xảy ra lỗi, cũng cần thoát khỏi Dispatch Group
+                                        if participant == self?.currentUser {
+                                            continue // Bỏ qua người dùng đang đăng nhập hiện tại
+                                        }
+                                        
+                                        // Lấy thông tin người dùng từ Firebase và thêm vào danh sách người dùng
+                                        group.enter()
+                                        self?.fetchUserBot(withUID: participant) { user in
+                                            if let user = user {
+                                                DispatchQueue.main.async {
+                                                    self?.users.append(user)
+                                                    // Khi dữ liệu của một người dùng đã được lấy, thoát khỏi Dispatch Group
                                                     group.leave()
                                                 }
+                                            } else {
+                                                // Trong trường hợp xảy ra lỗi, thoát khỏi Dispatch Group
+                                                group.leave()
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-
+                        
                         // Sử dụng Dispatch Group để đợi cho đến khi tất cả dữ liệu đã được lấy
                         group.notify(queue: .main) {
-                            // Khi tất cả dữ liệu đã được lấy, cập nhật topTableViewCell và reloadData
-                            self.topTableViewCell?.updateMatchIds(self.matchIds, currentUserID: self.currentUser)
-                            self.tableView.reloadData()
+                            // Khi tất cả dữ liệu đã được lấy reloadData
+                            self?.tableView.reloadData()
+                            self?.showLoading(isShow: false)
                         }
                     }
                 }
             } else {
-                print("Không có dữ liệu userMatched hoặc có lỗi.")
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Error", subTitle: "UserMatched data does not exist or there is an error.")
+                self.showLoading(isShow: false)
             }
         }
     }
-
     
     // Hàm để lấy danh sách userMatched
     func userMatched(completion: @escaping ([String]?) -> Void) {
@@ -114,7 +131,7 @@ class MessageViewController: UIViewController{
         }
     }
     
-    public func fetchUserBot(withUID uid: String, completion: @escaping (UserBot?) -> Void) {
+    func fetchUserBot(withUID uid: String, completion: @escaping (UserBot?) -> Void) {
         let databaseUserRef = databaseRef.child("user").child(uid)
         databaseUserRef.observeSingleEvent(of: .value) { snapshot, error in
             if let error = error {
@@ -133,45 +150,47 @@ class MessageViewController: UIViewController{
             }
         }
     }
+    
+    func fetchLastMessageForMatch(matchId: String, completion: @escaping (String?) -> Void) {
+        let messagesRef = databaseRef.child("matches").child(matchId).child("messages")
+        
+        messagesRef.queryLimited(toLast: 1).observe(.childAdded) { snapshot in
+            print("🥲 \(snapshot)")
+            
+            if let messageData = snapshot.value as? [String: Any],
+               let messageText = messageData["content"] as? String {
+                completion(messageText)
+            } else {
+                completion(nil)
+            }
+        }
+    }
 }
 
 extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count + 1
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "TopTableViewCell", for: indexPath) as! TopTableViewCell
-            cell.matchedUsers = users
-            cell.messageViewController = self
-            topTableViewCell = cell
-            return cell
-        } else {
-            if indexPath.row - 1 < users.count {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "BotTableViewCell", for: indexPath) as! BotTableViewCell
-                let user = users[indexPath.row - 1]
-                cell.configure(with: user)
-                return cell
-            } else {
-                return UITableViewCell()
-            }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BotTableViewCell", for: indexPath) as! BotTableViewCell
+        let user = users[indexPath.row]
+        cell.fetchLastMessage = { matchId, completion in
+            self.fetchLastMessageForMatch(matchId: matchId, completion: completion)
         }
+        cell.configure(with: user, matchId: matchIds[indexPath.row])
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 0 {
-            return 170
-        } else {
-            return 100
-        }
+        return 100
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath.row > 0 && indexPath.row - 1 < matchIds.count {
-            let selectedMatchId = matchIds[indexPath.row - 1]
+        if indexPath.row < matchIds.count {
+            let selectedMatchId = matchIds[indexPath.row]
             let storyboard = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ChatViewController") as! ChatViewController
             storyboard.matchId = selectedMatchId
             navigationController?.pushViewController(storyboard, animated: true)
@@ -179,3 +198,14 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
     }
 }
 
+extension MessageViewController: MessageDisplay{
+    func showLoading(isShow: Bool) {
+        DispatchQueue.main.async {
+            if isShow {
+                MBProgressHUD.showAdded(to: self.view, animated: true)
+            } else {
+                MBProgressHUD.hide(for: self.view, animated: true)
+            }
+        }
+    }
+}

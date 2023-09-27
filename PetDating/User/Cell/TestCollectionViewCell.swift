@@ -13,6 +13,7 @@ protocol TestCollectionViewCellDelegate: AnyObject{
     func matchUserHandle(user: User)
     func unMatchUserhandle(user: User)
     func petImageTapped(_ user: User)
+    func showLoading(isShow: Bool)
 }
 
 class TestCollectionViewCell: UICollectionViewCell {

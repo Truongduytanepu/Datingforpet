@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseDatabase
+import SCLAlertView
 
 class EditProfileOwnViewController: UIViewController {
     @IBOutlet weak var nameTF: UITextField!
@@ -59,23 +60,16 @@ class EditProfileOwnViewController: UIViewController {
                     "gender": newGender
                 ]) { (error, databseRef) in
                     if error != nil{
-                        self.showAlert(withTitle: "Error", message: "Failure to update profile")
+                        let appearance = SCLAlertView.SCLAppearance(
+                            showCircularIcon: true
+                        )
+                        let alertView = SCLAlertView(appearance: appearance)
+                        alertView.showError("Error", subTitle: "Failure to update pet's profile.")
                     }else{
-                        self.showAlert(withTitle: "Success", message: "Update profile successfully", completionHandler:{
-                            self.navigationController?.popViewController(animated: true)
-                        })
-                       
+                        self.navigationController?.popViewController(animated: true)
                     }
                 }
             }
         }
-    }
-    
-    func showAlert(withTitle title: String, message: String, completionHandler: (()->Void)? = nil){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-            completionHandler?()
-        }))
-        self.present(alert, animated: true, completion: nil)
     }
 }

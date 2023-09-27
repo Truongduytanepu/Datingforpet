@@ -12,16 +12,19 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import Kingfisher
+import SCLAlertView
 
 protocol ProfileTableViewCellDelegate: AnyObject {
     func editBtnTapped()
     func editBtnTappedPet()
     func sliderValueChange(lowerValue: Int, upperValue: Int)
     func showMeValueChange(selectedGender: String)
+    func showLoading(isShow: Bool)
 }
 
 class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDataSource {
     
+    @IBOutlet weak var viewBtn1: UIView!
     @IBOutlet weak var view: UIView!
     @IBOutlet weak var discoveryLbl: UILabel!
     @IBOutlet weak var editPetImage: UIButton!
@@ -155,7 +158,11 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
                 appDelegate.window?.makeKeyAndVisible()
             }
         }catch{
-            print("Logout Failure")
+            let appearance = SCLAlertView.SCLAppearance(
+                showCircularIcon: true
+            )
+            let alertView = SCLAlertView(appearance: appearance)
+            alertView.showError("Error", subTitle: "Logout Failure.")
         }
     }
     
@@ -196,6 +203,9 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         viewAgePet.setUpView()
         viewShowMe.setUpView()
         viewAgeShowMe.setUpView()
+        viewBtn1.layer.cornerRadius = viewBtn1.frame.height / 2
+        viewBtn1.backgroundColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
+        resultSlider.tintColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
     }
     
     // Sử dụng ActionSheetStringPicker để hiển thị UIPickerView
@@ -219,7 +229,11 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         
         storage.child("user_images/\(Auth.auth().currentUser?.uid ?? "")/user_image.jpg").putData(imageData, metadata: nil) { _, error in
             guard error == nil else {
-                print("Failure to upload")
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Error", subTitle: "Failure to upload")
                 return
             }
             
@@ -228,9 +242,6 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
                     print("Failed to get download URL")
                     return
                 }
-                
-                // lưu URL xuống cơ sở dữ liệu
-                print("Download URL: \(downloadURL)")
                 
                 // Cập nhật URL ảnh vào firebase
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/image").setValue(downloadURL.absoluteString)
@@ -253,14 +264,22 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         // Tải lên ảnh thú cưng
         petImageRef.putData(imageData, metadata: nil) { metadata, error in
             if let error = error {
-                print("Error updating pet image: \(error)")
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Error", subTitle: error.localizedDescription)
                 return
             }
             
             // Lấy URL tải về ảnh thú cưng
             petImageRef.downloadURL { url, error in
                 guard let downloadURL = url, error == nil else {
-                    print("Failed to get download URL")
+                    let appearance = SCLAlertView.SCLAppearance(
+                        showCircularIcon: true
+                    )
+                    let alertView = SCLAlertView(appearance: appearance)
+                    alertView.showError("Error", subTitle: error?.localizedDescription ?? "Failed to get download URL.")
                     return
                 }
                 
@@ -308,6 +327,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         viewAgeShowMe.isHidden = true
         view.isHidden = true
         logOut.isHidden = true
+        viewBtn1.isHidden = true
     }
 }
 

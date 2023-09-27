@@ -11,6 +11,8 @@ import FirebaseStorage
 import FirebaseAuth
 import Kingfisher
 import AnimatedCollectionViewLayout
+import MBProgressHUD
+import SCLAlertView
 
 struct User {
     var userId: String
@@ -43,14 +45,14 @@ class UserViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Ẩn thanh điều hướng khi profileviewcontroller xuất hiện
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        showLoading(isShow: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,22 +63,31 @@ class UserViewController: UIViewController {
         // Cấu hình UICollectionView, ví dụ: đăng ký cell tùy chỉnh
         collectionView.register(UINib(nibName: "TestCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TestCollectionViewCell")
         
-        // Khởi tạo database reference và storage reference
-        databaseRef = Database.database().reference()
-        storageRef = Storage.storage().reference()
-        
         // Đổi layout của UICollectionView sang CustomCollectionViewLayout
         let layout = AnimatedCollectionViewLayout()
         collectionView.collectionViewLayout = layout
-        
         layout.scrollDirection = .horizontal
         layout.animator = RotateInOutAttributesAnimator()
-        
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
         checkChange()
         fetchUserData()
         self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    func showAlert() {
+        // Tạo một cấu hình SCLAppearance để tùy chỉnh thông báo
+        let appearance = SCLAlertView.SCLAppearance(
+            showCircularIcon: true
+        )
+        let alertView = SCLAlertView(appearance: appearance)
+        alertView.addButton("Message", target: self, selector: #selector(firstButton))
+        alertView.showSuccess("Match Successful", subTitle: "You've successfully matched with another user!")
+    }
+    
+    @objc func firstButton() {
+        let messageVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MessageViewController") as! MessageViewController
+        self.navigationController?.pushViewController(messageVC, animated: true)
     }
     
     func checkChange(){
@@ -98,6 +109,8 @@ class UserViewController: UIViewController {
     }
     
     func fetchUserData() {
+        showLoading(isShow: true)
+        
         databaseRef.child("user").observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let userDicts = snapshot.value as? [String: [String: Any]],
                   let currentUserId = self?.currentUserId else {
@@ -155,6 +168,7 @@ class UserViewController: UIViewController {
             }
             self?.users = fetchedUsers
             self?.collectionView.reloadData()
+            self?.showLoading(isShow: false)
         }
     }
 }
@@ -174,7 +188,6 @@ extension UserViewController: UICollectionViewDataSource {
         cell.delegate = self
         cell.user = user
         cell.indexPath = indexPath
-        
         return cell
     }
     
@@ -201,6 +214,15 @@ extension UserViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension UserViewController: TestCollectionViewCellDelegate{
+    func showLoading(isShow: Bool) {
+        DispatchQueue.main.async {
+            if isShow {
+                MBProgressHUD.showAdded(to: self.view, animated: true)
+            } else {
+                MBProgressHUD.hide(for: self.view, animated: true)
+            }
+        }
+    }
     
     func petImageTapped(_ user: User) {
         let profileStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -212,109 +234,148 @@ extension UserViewController: TestCollectionViewCellDelegate{
     }
     
     func matchUserHandle(user: User) {
-        if let currentUserId = Auth.auth().currentUser?.uid {
-            let userRef = Database.database().reference().child("user").child(currentUserId)
-            let matchedUserRef = Database.database().reference().child("user").child(user.userId)
-            
-            userRef.child("followingIds").observeSingleEvent(of: .value) { snapshot in
-                var followingIds = snapshot.value as? [String] ?? []
-                followingIds.append(user.userId)
-                
-                // Cập nhật followingIds của người dùng đang đăng nhập
-                userRef.child("followingIds").setValue(followingIds)
-                
-                userRef.child("followerIds").observeSingleEvent(of: .value) { snapshot in
-                    let followerIds = snapshot.value as? [String] ?? []
-                    let matchingIds = Set(followingIds).intersection(Set(followerIds))
-                    
-                    if !matchingIds.isEmpty {
-                        // Lấy dữ liệu hiện có của matchIds của người dùng đang đăng nhập
-                        userRef.child("matchIds").observeSingleEvent(of: .value) { matchSnapshot in
-                            var matchIds = matchSnapshot.value as? [String] ?? []
-                            
-                            // Thêm UID của người dùng được match vào matchIds của người dùng đang đăng nhập
-                            if !matchIds.contains(user.userId) {
-                                matchIds.append(user.userId)
-                            }
-                            
-                            // Cập nhật matchIds của người dùng đang đăng nhập
-                            userRef.child("matchIds").setValue(matchIds) { error, _ in
-                                if error == nil {
-                                    self.addParticipantsToMatches()
-                                    // Lấy dữ liệu hiện có của matchIds của người dùng được match
-                                    matchedUserRef.child("matchIds").observeSingleEvent(of: .value) { matchedUserMatchSnapshot in
-                                        var matchedUserMatchIds = matchedUserMatchSnapshot.value as? [String] ?? []
-                                        
-                                        // Thêm UID của người dùng đang đăng nhập vào matchIds của người dùng được match
-                                        if !matchedUserMatchIds.contains(currentUserId) {
-                                            matchedUserMatchIds.append(currentUserId)
-                                        }
-                                        
-                                        // Cập nhật matchIds của người dùng được match
-                                        matchedUserRef.child("matchIds").setValue(matchedUserMatchIds) { error, _ in
-                                            if error == nil {
-                                                // Sau khi cập nhật dữ liệu lên Firebase, gọi fetchUserData để tải lại dữ liệu từ Firebase
-                                                self.fetchUserData()
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    print(error ?? "")
-                                }
-                            }
-                        }
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            // Không có người dùng đăng nhập, không làm gì cả
+            return
+        }
+        
+        let userRef = databaseRef.child("user").child(currentUserId)
+        let matchedUserRef = databaseRef.child("user").child(user.userId)
+        
+        // Thêm user.userId vào danh sách followingIds của người dùng đang đăng nhập
+        addUserIdToFollowingIds(user.userId, in: userRef) {
+            // Thêm currentUserId vào danh sách followerIds của người dùng được match
+            self.addCurrentUserIdToFollowerIds(currentUserId, in: matchedUserRef) {
+                // Kiểm tra trùng lặp giữa followingIds và followerIds
+                self.checkAndAddMatchIds(in: userRef, and: matchedUserRef) { matchIdsChanged in
+                    if matchIdsChanged {
+                        // Nếu matchIds có thay đổi, thêm người dùng hiện tại và người được match vào danh sách participants
+                        self.addParticipantsToMatches(userRef, matchedUserRef)
+                        self.showAlert()
                     }
+                    // Sau khi hoàn thành tất cả các bước, tải lại dữ liệu từ Firebase
+                    self.fetchUserData()
                 }
             }
+        }
+    }
+    
+    func addUserIdToFollowingIds(_ userId: String, in userRef: DatabaseReference, completion: @escaping () -> Void) {
+        userRef.child("followingIds").observeSingleEvent(of: .value) { snapshot in
+            var followingIds = snapshot.value as? [String] ?? []
             
-            matchedUserRef.child("followerIds").observeSingleEvent(of: .value) { followerSnapshot in
-                var followerIds = followerSnapshot.value as? [String] ?? []
+            if !followingIds.contains(userId) {
+                followingIds.append(userId)
+                
+                userRef.child("followingIds").setValue(followingIds) { error, _ in
+                    if error == nil {
+                        completion()
+                    } else {
+                        print(error ?? "")
+                    }
+                }
+            } else {
+                completion()
+            }
+        }
+    }
+    
+    func addCurrentUserIdToFollowerIds(_ currentUserId: String, in matchedUserRef: DatabaseReference, completion: @escaping () -> Void) {
+        matchedUserRef.child("followerIds").observeSingleEvent(of: .value) { snapshot in
+            var followerIds = snapshot.value as? [String] ?? []
+            
+            if !followerIds.contains(currentUserId) {
                 followerIds.append(currentUserId)
                 
-                // Cập nhật followerIds của người dùng được match
                 matchedUserRef.child("followerIds").setValue(followerIds) { error, _ in
                     if error == nil {
-                        // Sau khi cập nhật dữ liệu lên Firebase, gọi fetchUserData để tải lại dữ liệu từ Firebase
-                        self.fetchUserData()
+                        completion()
+                    } else {
+                        print(error ?? "")
                     }
                 }
+            } else {
+                completion()
             }
         }
     }
     
-    
-    func addParticipantsToMatches() {
-        if let currentUserId = currentUserId {
-            let userMatchIdsRef = databaseRef.child("user").child(currentUserId).child("matchIds")
+    func checkAndAddMatchIds(in userRef: DatabaseReference, and matchedUserRef: DatabaseReference, completion: @escaping (Bool) -> Void) {
+        // Lấy danh sách followingIds của người dùng hiện tại
+        userRef.child("followingIds").observeSingleEvent(of: .value) { followingSnapshot in
+            guard let followingIds = followingSnapshot.value as? [String] else {
+                // Không có followingIds, hoàn thành và không cần cập nhật
+                completion(false)
+                return
+            }
             
-            // Sử dụng observeSingleEvent để lấy giá trị danh sách matchIds một lần duy nhất
-            userMatchIdsRef.observeSingleEvent(of: .value) { [weak self] snapshot in
-                if let matchingIds = snapshot.value as? [String], let lastMatchingId = matchingIds.last {
-                    print(lastMatchingId)
+            // Lấy danh sách followerIds của người dùng hiện tại
+            userRef.child("followerIds").observeSingleEvent(of: .value) { followerSnapshot in
+                guard let followerIds = followerSnapshot.value as? [String] else {
+                    // Không có followerIds, hoàn thành và không cần cập nhật
+                    completion(false)
+                    return
+                }
+                
+                // Tìm phần tử trùng nhau giữa followerIds và followingIds của người dùng hiện tại
+                let matchingIds = Set(followerIds).intersection(Set(followingIds))
+                
+                // Lấy danh sách matchIds của người dùng hiện tại
+                userRef.child("matchIds").observeSingleEvent(of: .value) { matchSnapshot in
+                    var matchIds = matchSnapshot.value as? [String] ?? []
                     
-                    let matchesRef = self?.databaseRef.child("matches")
-                    let newMatchRef = matchesRef?.childByAutoId()
+                    // Thêm những phần tử trùng nhau từ danh sách matchingIds của người dùng hiện tại vào matchIds của người dùng đang đăng nhập
+                    for matchingId in matchingIds {
+                        if !matchIds.contains(matchingId) {
+                            matchIds.append(matchingId)
+                        }
+                    }
                     
-                    // Tạo một mảng để đại diện cho participants
-                    var participantsArray: [String] = []
-                    
-                    // Thêm người dùng hiện tại và lastMatchingId vào mảng
-                    participantsArray.append(currentUserId)
-                    participantsArray.append(lastMatchingId)
-                    
-                    print("☺️\(participantsArray)")
-                    
-                    // Kiểm tra xem participantsArray đã tồn tại trong danh sách matches chưa
-                    self?.checkIfParticipantsExist(participantsArray, inMatches: matchesRef) { exists in
-                        if !exists {
-                            // Nếu participantsArray chưa tồn tại trong matches, thì mới thêm vào
-                            newMatchRef?.child("participants").setValue(participantsArray) { (error, _) in
-                                if let error = error {
-                                    print("Không thể thêm participants: \(error)")
-                                } else {
-                                    print("Đã thêm participants thành công.")
+                    // Cập nhật danh sách matchIds của người dùng đang đăng nhập
+                    userRef.child("matchIds").setValue(Array(matchIds)) { error, _ in
+                        if error == nil {
+                            // Lấy danh sách followingIds của người dùng được match
+                            matchedUserRef.child("followingIds").observeSingleEvent(of: .value) { matchedFollowingSnapshot in
+                                guard let matchedFollowingIds = matchedFollowingSnapshot.value as? [String] else {
+                                    // Không có followingIds của người dùng được match, hoàn thành và không cần cập nhật
+                                    completion(false)
+                                    return
+                                }
+                                
+                                // Lấy danh sách followerIds của người dùng được match
+                                matchedUserRef.child("followerIds").observeSingleEvent(of: .value) { matchedFollowerSnapshot in
+                                    guard let matchedFollowerIds = matchedFollowerSnapshot.value as? [String] else {
+                                        // Không có followerIds của người dùng được match, hoàn thành và không cần cập nhật
+                                        completion(false)
+                                        return
+                                    }
+                                    
+                                    // Tìm phần tử trùng nhau giữa followerIds và followingIds của người dùng được match
+                                    let matchedMatchingIds = Set(matchedFollowerIds).intersection(Set(matchedFollowingIds))
+                                    
+                                    // Tạo một mảng mới để lưu trữ matchIds của người dùng được match
+                                    var matchedUserMatchIds = [String]()
+                                    
+                                    // Thêm những phần tử trùng nhau từ danh sách matchedMatchingIds của người dùng được match vào matchedUserMatchIds
+                                    for matchingId in matchedMatchingIds {
+                                        if !matchedUserMatchIds.contains(matchingId) {
+                                            matchedUserMatchIds.append(matchingId)
+                                        }
+                                    }
+                                    
+                                    // Cập nhật danh sách matchIds của người dùng được match
+                                    matchedUserRef.child("matchIds").setValue(Array(matchedUserMatchIds)) { error, _ in
+                                        if error != nil {
+                                            print(error ?? "")
+                                        } else {
+                                            completion(matchSnapshot.value as? [String] != matchIds)
+                                        }
+                                    }
                                 }
                             }
+                        } else {
+                            print(error ?? "")
+                            completion(false)
                         }
                     }
                 }
@@ -322,25 +383,38 @@ extension UserViewController: TestCollectionViewCellDelegate{
         }
     }
     
-    func checkIfParticipantsExist(_ participants: [String], inMatches matchesRef: DatabaseReference?, completion: @escaping (Bool) -> Void) {
-        // Kiểm tra xem participants đã tồn tại trong danh sách matches chưa
-        matchesRef?.observeSingleEvent(of: .value) { snapshot in
-            var exists = false
+    
+    func addParticipantsToMatches(_ userRef: DatabaseReference, _ matchedUserRef: DatabaseReference) {
+        // Lấy danh sách matchIds từ userRef
+        userRef.child("matchIds").observeSingleEvent(of: .value) { matchSnapshot in
+            guard let matchIds = matchSnapshot.value as? [String] else {
+                // Không có matchIds, không làm gì cả
+                return
+            }
             
-            if let matches = snapshot.value as? [String: Any] {
-                for (_, matchData) in matches {
-                    if let match = matchData as? [String: Any], let matchParticipants = match["participants"] as? [String] {
-                        if Set(matchParticipants) == Set(participants) {
-                            // participants đã tồn tại trong match
-                            exists = true
-                            break
-                        }
+            // Lấy UID của người dùng hiện tại
+            guard let currentUserId = Auth.auth().currentUser?.uid else {
+                // Không có người dùng đăng nhập, không làm gì cả
+                return
+            }
+            
+            // Lấy phần tử cuối cùng của danh sách matchIds
+            if let lastMatchId = matchIds.last {
+                // Thêm phần tử cuối cùng của matchIds vào danh sách participants
+                var participants: [String] = []
+                participants.append(lastMatchId)
+                participants.append(currentUserId)
+                
+                // Tạo một tham chiếu đến nhánh "matches" với childByAutoId
+                let matchesRef = Database.database().reference().child("matches").childByAutoId()
+                
+                // Cập nhật danh sách participants của matchesRef
+                matchesRef.child("participants").setValue(participants) { error, _ in
+                    if error != nil {
+                        print(error ?? "")
                     }
                 }
             }
-            
-            // Gọi closure với kết quả kiểm tra
-            completion(exists)
         }
     }
     

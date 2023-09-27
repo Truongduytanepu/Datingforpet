@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
+import MBProgressHUD
 
 struct UserProfile {
     let userId: String
@@ -39,7 +40,6 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         tableView.contentInsetAdjustmentBehavior = .never
-        self.navigationController?.isNavigationBarHidden = false
         if let _ = user {
             fetchUserProfile()
         } else {
@@ -49,10 +49,29 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Ẩn thanh điều hướng khi profileviewcontroller xuất hiện
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        showLoading(isShow: true)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        showLoading(isShow: false)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        // Hiển thị thanh điều hướng khi Profileviewcontriller biến mất
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    func setUpNavigation(){
+        // Custom back navigation
+        let backImage = UIImage(named: "back")
+        self.navigationController?.navigationBar.backgroundColor = .clear
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.backItem?.title = ""
+        navigationController?.navigationBar.tintColor = .black
+    }
+    
     
     func fetchUserProfile() {
         if let user = user {
@@ -87,14 +106,11 @@ class ProfileViewController: UIViewController {
                     // Hiển thị thông tin người dùng lên giao diện
                     self.tableView.reloadData()
                 }
+                
             }) { error in
                 print("Failed to fetch user data:", error)
             }
         }
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        // Hiển thị thanh điều hướng khi Profileviewcontriller biến mất
-        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     func setupTableView() {
@@ -111,21 +127,22 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let currentUserID = Auth.auth().currentUser?.uid, currentUser?.userId != currentUserID {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            setUpNavigation()
             return 1400
         }else{
+            navigationController?.setNavigationBarHidden(true, animated: true)
             return 1720
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileTableViewCell", for: indexPath) as! ProfileTableViewCell
-        
         // Kiểm tra xem đã có thông tin người dùng hiện tại hay chưa
         if let currentUser = currentUser {
-            
             if let currentUserID = Auth.auth().currentUser?.uid, currentUser.userId != currentUserID {
-                    cell.hideView()
-                }
+                cell.hideView()
+            }
             // Hiển thị thông tin người dùng lên cell
             cell.nameOwn.text = currentUser.name
             cell.ageOwn.text = String(currentUser.age )
@@ -160,9 +177,10 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
             cell.cellBackgroundView.sendSubviewToBack(imgView)
             tableView.backgroundColor = .clear
         }
-        
         return cell
+        
     }
+    
 }
 
 extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
@@ -180,7 +198,7 @@ extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedGender = gender[row]
-        // Cập nhật giới tính đã chọn vào biến currentUser hoặc nơi bạn lưu trữ thông tin người dùng
+        // Cập nhật giới tính đã chọn vào biến currentUser
         currentUser?.gender = selectedGender
         
         // Reload tableView để hiển thị giới tính đã chọn
@@ -189,6 +207,16 @@ extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
 }
 
 extension ProfileViewController: ProfileTableViewCellDelegate{
+    func showLoading(isShow: Bool) {
+        DispatchQueue.main.async {
+            if isShow {
+                MBProgressHUD.showAdded(to: self.view, animated: true)
+            } else {
+                MBProgressHUD.hide(for: self.view, animated: true)
+            }
+        }
+    }
+    
     func showMeValueChange(selectedGender: String) {
         tableView.reloadData()
     }

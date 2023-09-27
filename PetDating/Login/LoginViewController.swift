@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import SCLAlertView
 
 class LoginViewController: UIViewController {
     
@@ -54,11 +55,11 @@ class LoginViewController: UIViewController {
         setUpButton(button: googleBtn)
         signInBtn.layer.cornerRadius = 25
     }
-    
+
     func setUpButton(button: UIButton) {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.gray.cgColor
-        button.setTitleColor(UIColor(red: 0.925, green: 0.42, blue: 0.588, alpha: 1), for: .normal)
+        button.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
         button.layer.cornerRadius = 20
         button.backgroundColor = .white
         button.clipsToBounds = true
@@ -78,11 +79,11 @@ class LoginViewController: UIViewController {
             guard let strongSelf = self else { return }
             
             if let error = error {
-                // Hiển thị thông báo lỗi đăng nhập cho người dùng
-                let alertController = UIAlertController(title: "Sign in failure", message: error.localizedDescription, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                alertController.addAction(okAction)
-                strongSelf.present(alertController, animated: true, completion: nil)
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Sign in failure", subTitle: error.localizedDescription)
                 return
             }else{
                 // Đăng nhập thành công

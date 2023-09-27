@@ -35,7 +35,6 @@ class TutorialViewController: UIViewController {
         if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.minimumLineSpacing = 0
             flowLayout.minimumInteritemSpacing = 0
-            
             flowLayout.estimatedItemSize = .zero
             flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             flowLayout.scrollDirection = .horizontal

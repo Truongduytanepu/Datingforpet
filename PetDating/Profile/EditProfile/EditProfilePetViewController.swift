@@ -7,9 +7,10 @@
 
 import UIKit
 import FirebaseDatabase
+import SCLAlertView
 
 class EditProfilePetViewController: UIViewController {
-
+    
     @IBOutlet weak var ageTF: UITextField!
     @IBOutlet weak var typeTF: UITextField!
     @IBOutlet weak var genderTF: UITextField!
@@ -35,7 +36,7 @@ class EditProfilePetViewController: UIViewController {
         self.navigationController?.navigationBar.backIndicatorImage = backImage
         self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
         self.navigationController?.navigationBar.backItem?.title = ""
-
+        
         //setup nút Save
         saveBtn.layer.cornerRadius = saveBtn.frame.height/2
     }
@@ -53,21 +54,16 @@ class EditProfilePetViewController: UIViewController {
                     "type": newType
                 ]) { (error, databseRef) in
                     if error != nil{
-                        self.showAlert(withTitle: "Error", message: "Failure to update pet's profile")
+                        let appearance = SCLAlertView.SCLAppearance(
+                            showCircularIcon: true
+                        )
+                        let alertView = SCLAlertView(appearance: appearance)
+                        alertView.showError("Error", subTitle: "Failure to update pet's profile.")
                     }else{
-                        self.showAlert(withTitle: "Success", message: "Update pet's profile successfully", completionHandler:{
-                            self.navigationController?.popViewController(animated: true)
-                        })
+                        self.navigationController?.popViewController(animated: true)
                     }
                 }
             }
         }
-    }
-    func showAlert(withTitle title: String, message: String, completionHandler: (()->Void)? = nil){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-            completionHandler?()
-        }))
-        self.present(alert, animated: true, completion: nil)
     }
 }

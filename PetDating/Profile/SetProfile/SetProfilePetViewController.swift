@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import Kingfisher
+import SCLAlertView
 
 class SetProfilePetViewController: UIViewController {
     
@@ -40,7 +41,12 @@ class SetProfilePetViewController: UIViewController {
             present(imagePicker, animated: true)
         } else {
             // Người dùng chưa đăng nhập, xử lí tương ứng
-            showAlert(withTitle: "Error", message: "Please log in before selecting an image.")
+            let appearance = SCLAlertView.SCLAppearance(
+                showCircularIcon: true
+            )
+            let alertView = SCLAlertView(appearance: appearance)
+            alertView.showError("Error", subTitle: "Please log in before selecting an image.")
+            
         }
     }
     
@@ -61,22 +67,16 @@ class SetProfilePetViewController: UIViewController {
         let petRef = databaseRef.child("user").child(Auth.auth().currentUser?.uid ?? "").child("pet")
         petRef.updateChildValues(userData) { error, _ in
             if let error = error {
-                self.showAlert(withTitle: "Error", message: "Failure to save profile")
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Error", subTitle: "Failure to save profile.")
             } else {
                 UserDefaults.standard.set(true, forKey: "isSetProfilePet")
-                self.showAlert(withTitle: "Success", message: "Save profile successfully") {
                     AppDelegate.scene?.routeToMainController()
-                }
             }
         }
-    }
-    
-    func showAlert(withTitle title: String, message: String, completionHandler: (()->Void)? = nil){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-            completionHandler?()
-        }))
-        self.present(alert, animated: true, completion: nil)
     }
     
     private func uploadPetImg(_ image: UIImage) {

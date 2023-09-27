@@ -7,8 +7,11 @@
 
 import UIKit
 import ESTabBarController_swift
+import MBProgressHUD
 
-class MainTabbarViewController: ESTabBarController {
+
+
+class MainTabbarViewController: ESTabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +19,7 @@ class MainTabbarViewController: ESTabBarController {
         loadTabBarView()
         selectedIndex = 0
         navigationController?.isNavigationBarHidden = true
+        self.delegate = self
     }
     
     private func setupTabBarAppearance() {

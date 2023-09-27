@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import SCLAlertView
 
 class RegisterViewController: UIViewController {
     
@@ -66,13 +67,15 @@ class RegisterViewController: UIViewController {
         let password = passwordTF.text ?? ""
         let confirmPassword = confirmPasswordTF.text ?? ""
         
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             
             if password == confirmPassword {
                 if let error = error {
-                    let alert = UIAlertController(title: "Sign Up Failure", message: error.localizedDescription, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self?.present(alert, animated: true)
+                    let appearance = SCLAlertView.SCLAppearance(
+                        showCircularIcon: true
+                    )
+                    let alertView = SCLAlertView(appearance: appearance)
+                    alertView.showError("Sign up failure", subTitle: error.localizedDescription)
                 } else {
                     UserDefaults.standard.set(true, forKey: "isLoggedIn")
                     if UserDefaults.standard.bool(forKey: "isSetProfileUser"){
@@ -87,9 +90,12 @@ class RegisterViewController: UIViewController {
                     
                 }
             } else {
-                let alert = UIAlertController(title: "Sign Up Failure", message: "Confirmpassword went wrong", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(alert, animated: true)
+                let appearance = SCLAlertView.SCLAppearance(
+                    showCircularIcon: true
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.showError("Sign up failure", subTitle: "Confirmpassword went wrong.")
+                return
             }
         }
     }

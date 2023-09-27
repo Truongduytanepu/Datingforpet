@@ -505,28 +505,40 @@
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar (1)" translatesAutoresizingMaskIntoConstraints="NO" id="xe5-IR-yPa">
                                         <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ehN-sb-gfl">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="njg-Dk-dcM">
                                         <rect key="frame" x="80" y="0.0" width="40" height="40"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ehN-sb-gfl">
+                                                <rect key="frame" x="7.6666666666666572" y="7.6666666666666714" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="25" id="TGm-Xx-Ick"/>
+                                                    <constraint firstAttribute="width" constant="25" id="Wxj-YB-3CX"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" image="Group 26" title=""/>
+                                                <connections>
+                                                    <action selector="editImageUser:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Pzq-hi-j3w"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="3Nx-Ub-ITp"/>
-                                            <constraint firstAttribute="width" constant="40" id="UPb-aP-GEk"/>
+                                            <constraint firstItem="ehN-sb-gfl" firstAttribute="centerY" secondItem="njg-Dk-dcM" secondAttribute="centerY" id="GNo-QF-9JC"/>
+                                            <constraint firstItem="ehN-sb-gfl" firstAttribute="centerX" secondItem="njg-Dk-dcM" secondAttribute="centerX" id="QDP-qS-kiN"/>
+                                            <constraint firstAttribute="width" constant="40" id="fbr-vy-ZuF"/>
+                                            <constraint firstAttribute="height" constant="40" id="oA7-By-rPw"/>
                                         </constraints>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="Group 26" title=""/>
-                                        <connections>
-                                            <action selector="editImageUser:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Pzq-hi-j3w"/>
-                                        </connections>
-                                    </button>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="ehN-sb-gfl" secondAttribute="trailing" id="62x-vA-Kug"/>
                                     <constraint firstItem="xe5-IR-yPa" firstAttribute="top" secondItem="zAi-qE-7mc" secondAttribute="top" id="NGX-M5-om9"/>
                                     <constraint firstAttribute="bottom" secondItem="xe5-IR-yPa" secondAttribute="bottom" id="Nh7-4c-zQU"/>
-                                    <constraint firstItem="ehN-sb-gfl" firstAttribute="top" secondItem="zAi-qE-7mc" secondAttribute="top" id="Qvk-cx-3Rv"/>
                                     <constraint firstAttribute="width" constant="120" id="ahY-gj-sSp"/>
                                     <constraint firstAttribute="trailing" secondItem="xe5-IR-yPa" secondAttribute="trailing" id="jBz-db-CJj"/>
+                                    <constraint firstItem="njg-Dk-dcM" firstAttribute="top" secondItem="zAi-qE-7mc" secondAttribute="top" id="ksB-27-eRA"/>
                                     <constraint firstAttribute="height" constant="120" id="tsC-gc-XRi"/>
+                                    <constraint firstAttribute="trailing" secondItem="njg-Dk-dcM" secondAttribute="trailing" id="wMl-RM-EQf"/>
                                     <constraint firstItem="xe5-IR-yPa" firstAttribute="leading" secondItem="zAi-qE-7mc" secondAttribute="leading" id="xuV-mt-jJo"/>
                                 </constraints>
                             </view>
@@ -636,6 +648,7 @@
                 <outlet property="viewAge" destination="cCM-1S-g6W" id="fRO-ed-hVA"/>
                 <outlet property="viewAgePet" destination="u0b-9k-Z2B" id="5Uy-K1-hqQ"/>
                 <outlet property="viewAgeShowMe" destination="dGW-Z1-GOQ" id="gwN-pW-OWs"/>
+                <outlet property="viewBtn1" destination="njg-Dk-dcM" id="aPt-tu-aLx"/>
                 <outlet property="viewGender" destination="po6-Wp-q6k" id="gmx-Jq-QbJ"/>
                 <outlet property="viewGenderPet" destination="gmU-br-nVj" id="p2R-8Z-Ywy"/>
                 <outlet property="viewImageOwn" destination="zAi-qE-7mc" id="0co-JO-5EB"/>

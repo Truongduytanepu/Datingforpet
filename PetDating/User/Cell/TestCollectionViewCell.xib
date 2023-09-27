@@ -11,17 +11,17 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="TestCollectionViewCell" customModule="PetDating" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="443" height="892"/>
+            <rect key="frame" x="0.0" y="0.0" width="443" height="682"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="443" height="892"/>
+                <rect key="frame" x="0.0" y="0.0" width="443" height="682"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="voJ-Bl-4xu">
-                        <rect key="frame" x="0.0" y="0.0" width="443" height="892"/>
+                        <rect key="frame" x="0.0" y="0.0" width="443" height="682"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N5q-A5-5tp">
-                                <rect key="frame" x="0.0" y="0.0" width="443" height="892"/>
+                                <rect key="frame" x="0.0" y="0.0" width="443" height="682"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image 2" translatesAutoresizingMaskIntoConstraints="NO" id="0Bm-At-XAH">
                                         <rect key="frame" x="10" y="10" width="50" height="50"/>
@@ -55,13 +55,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pexels-julissa-helmuth-3196887" translatesAutoresizingMaskIntoConstraints="NO" id="j1G-At-yfc">
-                                        <rect key="frame" x="10" y="76" width="423" height="564"/>
+                                        <rect key="frame" x="10" y="76" width="423" height="516"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="j1G-At-yfc" secondAttribute="height" multiplier="3:4" id="d8h-CA-qeC"/>
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wno-6i-NAb">
-                                        <rect key="frame" x="101.66666666666667" y="660" width="50.000000000000014" height="90"/>
+                                        <rect key="frame" x="101.66666666666667" y="612" width="50.000000000000014" height="90"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="90" id="DiZ-Xj-AHL"/>
                                             <constraint firstAttribute="width" constant="50" id="SQ8-ob-nM7"/>
@@ -73,7 +73,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eMU-fw-pI4">
-                                        <rect key="frame" x="171.66666666666666" y="650" width="99.999999999999972" height="100"/>
+                                        <rect key="frame" x="171.66666666666666" y="602" width="99.999999999999972" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="100" id="1pS-95-rBd"/>
                                             <constraint firstAttribute="height" constant="100" id="eL0-4U-2tG"/>
@@ -85,7 +85,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ugv-A4-oOf">
-                                        <rect key="frame" x="291.66666666666669" y="660" width="50" height="90"/>
+                                        <rect key="frame" x="291.66666666666669" y="612" width="50" height="90"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="DyM-5v-my1"/>
                                             <constraint firstAttribute="height" constant="90" id="FoK-b6-dE7"/>
@@ -110,11 +110,11 @@
                                     <constraint firstAttribute="trailing" secondItem="Lz3-1l-fM6" secondAttribute="trailing" constant="10" id="Okk-14-Rcu"/>
                                     <constraint firstItem="ugv-A4-oOf" firstAttribute="top" secondItem="j1G-At-yfc" secondAttribute="bottom" constant="20" id="PkB-ef-PxX"/>
                                     <constraint firstItem="ugv-A4-oOf" firstAttribute="leading" secondItem="eMU-fw-pI4" secondAttribute="trailing" constant="20" id="V08-5x-jhl"/>
-                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="eMU-fw-pI4" secondAttribute="bottom" constant="-10" id="bPz-V2-eHB"/>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="eMU-fw-pI4" secondAttribute="bottom" constant="-20" id="bPz-V2-eHB"/>
                                     <constraint firstItem="0Bm-At-XAH" firstAttribute="leading" secondItem="N5q-A5-5tp" secondAttribute="leading" constant="10" id="blY-xq-RcU"/>
                                     <constraint firstItem="Lz3-1l-fM6" firstAttribute="top" secondItem="0Bm-At-XAH" secondAttribute="top" id="bml-Zb-ajO"/>
-                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ugv-A4-oOf" secondAttribute="bottom" constant="-10" id="lRW-V1-u5c"/>
-                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Wno-6i-NAb" secondAttribute="bottom" constant="-10" id="mTK-1X-hjG"/>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ugv-A4-oOf" secondAttribute="bottom" constant="-20" id="lRW-V1-u5c"/>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Wno-6i-NAb" secondAttribute="bottom" constant="-20" id="mTK-1X-hjG"/>
                                     <constraint firstItem="Cks-aI-yat" firstAttribute="leading" secondItem="0Bm-At-XAH" secondAttribute="trailing" constant="20" id="sOa-hR-Ysz"/>
                                     <constraint firstItem="0Bm-At-XAH" firstAttribute="top" secondItem="N5q-A5-5tp" secondAttribute="top" constant="10" id="w1P-Yw-3BY"/>
                                     <constraint firstItem="eMU-fw-pI4" firstAttribute="top" secondItem="j1G-At-yfc" secondAttribute="bottom" constant="10" id="yvg-1K-3Ba"/>
@@ -138,7 +138,7 @@
                 <constraint firstAttribute="bottom" secondItem="voJ-Bl-4xu" secondAttribute="bottom" id="XYQ-Ef-pQ8"/>
                 <constraint firstAttribute="trailing" secondItem="voJ-Bl-4xu" secondAttribute="trailing" id="YZI-Pn-1IJ"/>
             </constraints>
-            <size key="customSize" width="443" height="892"/>
+            <size key="customSize" width="443" height="682"/>
             <connections>
                 <outlet property="avatarImageView" destination="0Bm-At-XAH" id="7RZ-pw-Zh9"/>
                 <outlet property="containerView" destination="N5q-A5-5tp" id="1lX-RJ-PO0"/>
@@ -146,7 +146,7 @@
                 <outlet property="nameLabel" destination="Cks-aI-yat" id="BdS-5l-do5"/>
                 <outlet property="petImageView" destination="j1G-At-yfc" id="bQU-YL-aaT"/>
             </connections>
-            <point key="canvasLocation" x="399.23664122137404" y="315.49295774647891"/>
+            <point key="canvasLocation" x="399.23664122137404" y="241.5492957746479"/>
         </collectionViewCell>
     </objects>
     <resources>

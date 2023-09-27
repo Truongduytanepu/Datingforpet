@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import FirebaseAuth
-import FirebaseDatabase
 
 class TopCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var nameLbl: UILabel!
@@ -15,6 +13,5 @@ class TopCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         userImage.layer.cornerRadius = userImage.frame.height / 2
-
     }
 }

@@ -1,16 +1,10 @@
-//
-//  ChatViewController.swift
-//  PetDating
-//
-//  Created by Trương Duy Tân on 17/08/2023.
-//
-
 import UIKit
 import MessageKit
 import FirebaseAuth
 import FirebaseDatabase
 import InputBarAccessoryView
 import MessageInputBar
+import Kingfisher
 
 struct MockMessage: MessageType {
     var sender: SenderType
@@ -28,11 +22,14 @@ struct MockMessage: MessageType {
 
 class ChatViewController: MessagesViewController {
     
-    
     var messages: [MessageType] = []
+    var selectedUser: UserBot?
     var matchId: String = ""
     let currentUser = Auth.auth().currentUser?.uid
     var receiverImageURL: String = ""
+    var pinkColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
+    var greyColor = UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 1.0)
+    let databaseRef = Database.database().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,23 +40,19 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate = self
-        // Reload dữ liệu để hiển thị tin nhắn
-        fetchParticipantImage()
+        messageInputBar.sendButton.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
         messagesCollectionView.reloadData()
-        print("❤️ \(matchId)")
     }
     
+    // lắng nghe tin nhắn từ firebase
     func observeMessages() {
         guard let currentUser = currentUser, !matchId.isEmpty else {
             return
         }
         
         let databaseRef = Database.database().reference()
-        
-        // Sử dụng matchId để xác định đường dẫn đến tin nhắn của trận đấu này
         let messagesRef = databaseRef.child("matches").child(matchId).child("messages")
         
-        // Lắng nghe sự thay đổi khi có bất kỳ thay đổi nào trong "messages"
         messagesRef.observe(.value) { [weak self] snapshot, error in
             guard let self = self else { return }
             
@@ -69,7 +62,6 @@ class ChatViewController: MessagesViewController {
             }
             
             if let messagesData = snapshot.value as? [String: [String: Any]] {
-                // Xóa dữ liệu cũ trong mảng tin nhắn
                 self.messages.removeAll()
                 
                 for (messageId, messageData) in messagesData {
@@ -77,22 +69,18 @@ class ChatViewController: MessagesViewController {
                        let text = messageData["content"] as? String,
                        let timestampString = messageData["timestamp"] as? String {
                         
-                        // Thử chuyển đổi timestampString thành TimeInterval
                         if let sentDate = self.convertTimestampStringToTimeInterval(timestampString) {
                             let sender = Sender(senderId: senderId, displayName: senderId)
                             let message = MockMessage(text: text, sender: sender, messageId: messageId, date: sentDate)
                             
-                            // Thêm tin nhắn vào mảng
                             self.messages.append(message)
                             print(sentDate)
                         } else {
-                            // Xử lý lỗi nếu không thể chuyển đổi timestampString thành TimeInterval
                             print("Invalid timestamp format: \(timestampString)")
                         }
                     }
                 }
                 
-                // Cập nhật giao diện sau khi đã lấy tất cả tin nhắn
                 self.messages.sort(by: { $0.sentDate < $1.sentDate })
                 self.messagesCollectionView.reloadData()
             }
@@ -104,23 +92,18 @@ class ChatViewController: MessagesViewController {
             return
         }
         
-        // Tạo một dictionary để biểu diễn tin nhắn mới
         let messageData: [String: Any] = [
             "sender": currentSender().senderId,
             "content": messageText,
-            "timestamp": Date().iso8601String // Sử dụng một hàm mở rộng để chuyển đổi thời gian thành chuỗi định dạng ISO 8601
+            "timestamp": Date().iso8601String // chuyển đổi thời gian thành chuỗi định dạng ISO 8601
         ]
         
-        let databaseRef = Database.database().reference()
-        
-        // Sử dụng matchId để xác định đường dẫn đến trận đấu cụ thể
+        // thêm tin nhắn vào firebase
         let matchMessagesRef = databaseRef.child("matches").child(matchId).child("messages")
-        
-        // Thêm tin nhắn vào cơ sở dữ liệu
         let newMessageRef = matchMessagesRef.childByAutoId()
         newMessageRef.setValue(messageData)
         
-        // Tạo một đối tượng Message từ messageData và thêm nó vào mảng messages
+        //Tạo một đối tượng Message từ messageData và thêm nó vào mảng messages
         if let senderId = messageData["sender"] as? String,
            let text = messageData["content"] as? String,
            let timestampString = messageData["timestamp"] as? String,
@@ -132,10 +115,10 @@ class ChatViewController: MessagesViewController {
             self.messages.sort(by: { $0.sentDate < $1.sentDate })
         }
         
-        // Reload the messages collection view to display the new message
         self.messagesCollectionView.reloadData()
     }
     
+    // chuyển đổi chuỗi thời gian thành kiểu Date
     func convertTimestampStringToTimeInterval(_ timestampString: String) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -144,67 +127,24 @@ class ChatViewController: MessagesViewController {
     }
     
     func setUpNavigation(){
-        // Custom back navigation
         let backImage = UIImage(named: "back")
         self.navigationController?.navigationBar.backIndicatorImage = backImage
         self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
         self.navigationController?.navigationBar.backItem?.title = ""
-    }
-    
-    func fetchParticipantImage() {
-        
-        let databaseRef = Database.database().reference()
-        let participantsRef = databaseRef.child("matches").child(matchId).child("participants")
-        
-        // Lấy danh sách các participants
-        participantsRef.observeSingleEvent(of: .value) { [weak self] (snapshot) in
-            guard let self = self, let participantsData = snapshot.value as? [String: Any] else {
-                return
-            }
-            
-            for (participantId, _) in participantsData {
-                if participantId != self.currentUser {
-                    // Lấy thông tin người dùng từ participantId và cập nhật ảnh của người nhận
-                    self.fetchUserImage(for: participantId) { (imageURL) in
-                        // Cập nhật ảnh người nhận
-                        self.receiverImageURL = imageURL
-                        // Reload giao diện hoặc cập nhật ảnh người nhận theo nhu cầu của bạn
-                    }
-                }
-            }
-        }
-    }
-    
-    func fetchUserImage(for userId: String, completion: @escaping (String) -> Void) {
-        let databaseRef = Database.database().reference()
-        let userRef = databaseRef.child("user").child(userId)
-        
-        userRef.observeSingleEvent(of: .value) { (snapshot) in
-            if let userData = snapshot.value as? [String: Any],
-               let imageURL = userData["image"] as? String {
-                print("Image URL: \(imageURL)") // Check if you are getting the imageURL correctly.
-                completion(imageURL)
-            } else {
-                print("Error fetching user data for userId: \(userId)")
-            }
-        }
+        navigationController?.navigationBar.tintColor = .black
     }
 }
 
 extension ChatViewController: MessagesDataSource{
-    
     func currentSender() -> SenderType {
         if let currentUser = Auth.auth().currentUser?.uid {
-            // Xác định người gửi tin nhắn
             if currentUser == self.currentUser {
-                // Nếu là người dùng hiện tại, hiển thị bên phải
-                return Sender(senderId: currentUser, displayName: "Your Display Name")
+                return Sender(senderId: currentUser, displayName: "")
             } else {
-                // Hiển thị bên trái cho người dùng được nhận
-                return Sender(senderId: "otherUserId", displayName: "Other User's Display Name")
+                return Sender(senderId: "", displayName: "")
             }
         } else {
-            return Sender(senderId: "unknown", displayName: "Unknown")
+            return Sender(senderId: "", displayName: "")
         }
     }
     
@@ -218,7 +158,21 @@ extension ChatViewController: MessagesDataSource{
 }
 
 extension ChatViewController: MessagesLayoutDelegate, MessagesDisplayDelegate {
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? pinkColor : greyColor
+    }
     
+    func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return CGSize.zero
+    }
+    
+    func messageContainerSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return CGSize(width: 250, height: 50)
+    }
+    
+    func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? .white : .black
+    }
 }
 
 extension Date {
@@ -231,20 +185,14 @@ extension Date {
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         sendMessage(text)
-        // Xóa nội dung trong trường nhập sau khi gửi
-        
-        print("🔴 Send button pressed with text: \(text)")
     }
     
     func inputBar(_ inputBar: InputBarAccessoryView, didChangeIntrinsicContentTo size: CGSize) {
-        // Xử lý sự kiện thay đổi kích thước giao diện tại đây
     }
     
     func inputBar(_ inputBar: InputBarAccessoryView, textViewTextDidChangeTo text: String) {
-        // Xử lý sự kiện thay đổi nội dung của trường nhập tại đây
     }
     
     func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
-        // Xử lý sự kiện vuốt trường nhập tại đây
     }
 }

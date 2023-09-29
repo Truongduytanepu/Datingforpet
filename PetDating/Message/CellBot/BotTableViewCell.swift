@@ -35,7 +35,7 @@ class BotTableViewCell: UITableViewCell {
         }
     }
     
-    // Update this method to set the user data
+    // Cấu hình ô TableViewCell
     func configure(with selectedUser: UserBot, matchId: String) {
         nameLbl.text = selectedUser.name
         

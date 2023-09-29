@@ -20,6 +20,12 @@ class NotNetworkViewController: UIViewController {
     }
     
     @IBAction func retryBtn(_ sender: Any) {
+        showLoading(isShow: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            // Ẩn MBProgressHUD khi thời gian đã đủ
+            self.showLoading(isShow: false)
+        }
         // Kiểm tra trạng thái kết nối mạng
         if isNetworkReachable() {
             // Có kết nối mạng, bạn có thể thực hiện xử lý tải lại màn hình khác tại đây

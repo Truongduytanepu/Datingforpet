@@ -18,9 +18,11 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var passwordTF: UITextField!
     @IBOutlet weak var emailTF: UITextField!
     @IBOutlet weak var signUpBtn: UIButton!
+    
     var check: Bool = true
     var checkPassword1: Bool = true
     var checkPassword2: Bool = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         signUpBtn.layer.cornerRadius = 25
@@ -71,12 +73,9 @@ class RegisterViewController: UIViewController {
             
             if password == confirmPassword {
                 if let error = error {
-                    let appearance = SCLAlertView.SCLAppearance(
-                        showCircularIcon: true
-                    )
-                    let alertView = SCLAlertView(appearance: appearance)
-                    alertView.showError("Sign up failure", subTitle: error.localizedDescription)
+                    SCLAlertView.showErrorAlert(title: "Sign up failure", message: error.localizedDescription)
                 } else {
+                    // Đăng ký thành công
                     UserDefaults.standard.set(true, forKey: "isLoggedIn")
                     if UserDefaults.standard.bool(forKey: "isSetProfileUser"){
                         if UserDefaults.standard.bool(forKey: "isSetProfilePet"){
@@ -90,13 +89,19 @@ class RegisterViewController: UIViewController {
                     
                 }
             } else {
-                let appearance = SCLAlertView.SCLAppearance(
-                    showCircularIcon: true
-                )
-                let alertView = SCLAlertView(appearance: appearance)
-                alertView.showError("Sign up failure", subTitle: "Confirmpassword went wrong.")
+                SCLAlertView.showErrorAlert(title: "Sign up failure", message: error?.localizedDescription ?? "Confirm password doesn't match.")
                 return
             }
         }
+    }
+}
+
+extension SCLAlertView {
+    static func showErrorAlert(title: String, message: String) {
+        let appearance = SCLAlertView.SCLAppearance(
+            showCircularIcon: true
+        )
+        let alertView = SCLAlertView(appearance: appearance)
+        alertView.showError(title, subTitle: message)
     }
 }

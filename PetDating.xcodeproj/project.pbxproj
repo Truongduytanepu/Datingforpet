@@ -36,6 +36,7 @@
 		265911472A8DB69000FB2B96 /* BotTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265911452A8DB69000FB2B96 /* BotTableViewCell.xib */; };
 		2659114E2A8E102200FB2B96 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2659114D2A8E102200FB2B96 /* ChatViewController.swift */; };
 		26714C772AC412D10072EB72 /* NotNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26714C762AC412D10072EB72 /* NotNetworkViewController.swift */; };
+		26714C792AC6AA450072EB72 /* ShowLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26714C782AC6AA450072EB72 /* ShowLoading.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		265911452A8DB69000FB2B96 /* BotTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BotTableViewCell.xib; sourceTree = "<group>"; };
 		2659114D2A8E102200FB2B96 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		26714C762AC412D10072EB72 /* NotNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotNetworkViewController.swift; sourceTree = "<group>"; };
+		26714C782AC6AA450072EB72 /* ShowLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowLoading.swift; sourceTree = "<group>"; };
 		4F80619600AD870007EB3A8E /* Pods_PetDating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PetDating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D65DCA2510100CA89AFCC3C /* Pods-PetDating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.release.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.release.xcconfig"; sourceTree = "<group>"; };
 		A35A252690C54FF6B4CE0EC0 /* Pods-PetDating.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetDating.debug.xcconfig"; path = "Target Support Files/Pods-PetDating/Pods-PetDating.debug.xcconfig"; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				265910EE2A8A6A3000FB2B96 /* LaunchScreen.storyboard */,
 				265910F12A8A6A3000FB2B96 /* Info.plist */,
 				265910F72A8A6A9A00FB2B96 /* GoogleService-Info.plist */,
+				26714C782AC6AA450072EB72 /* ShowLoading.swift */,
 			);
 			path = PetDating;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 				265911462A8DB69000FB2B96 /* BotTableViewCell.swift in Sources */,
 				26714C772AC412D10072EB72 /* NotNetworkViewController.swift in Sources */,
 				2659112E2A8A6C4100FB2B96 /* CustomStyleTabBarContentView.swift in Sources */,
+				26714C792AC6AA450072EB72 /* ShowLoading.swift in Sources */,
 				265911292A8A6C3B00FB2B96 /* UserViewController.swift in Sources */,
 				265911032A8A6C0E00FB2B96 /* TutorialViewController.swift in Sources */,
 				265911042A8A6C0E00FB2B96 /* ItemCollectionViewCell.swift in Sources */,

@@ -9,10 +9,6 @@ import UIKit
 import FirebaseDatabase
 import Kingfisher
 
-protocol BotDisplay{
-    func showLoading(isShow: Bool)
-}
-
 class BotTableViewCell: UITableViewCell {
     
     @IBOutlet weak var timeLbl: UILabel!

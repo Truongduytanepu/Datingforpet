@@ -14,12 +14,12 @@ import FirebaseStorage
 import Kingfisher
 import SCLAlertView
 
+// protocol để gửi dữ liệu từ cell về Vỉewcontroller
 protocol ProfileTableViewCellDelegate: AnyObject {
     func editBtnTapped()
     func editBtnTappedPet()
     func sliderValueChange(lowerValue: Int, upperValue: Int)
     func showMeValueChange(selectedGender: String)
-    func showLoading(isShow: Bool)
 }
 
 class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDataSource {
@@ -59,12 +59,14 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     @IBOutlet weak var nameOwn: UILabel!
     @IBOutlet weak var editBtn1: UIButton!
     @IBOutlet weak var nameAndAgeOwn: UILabel!
+    
     var genderPickerView: UIPickerView!
     var gender: [String]!
     var currentUser: UserProfile?
     var delegate: ProfileTableViewCellDelegate?
     var isAddingUserImage = false
     var isAddingPetImage = false
+    
     private var userImagePicker: UIImagePickerController = UIImagePickerController()
     private var petImagePicker:UIImagePickerController = UIImagePickerController()
     private let storage = Storage.storage().reference()
@@ -74,10 +76,9 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     override func awakeFromNib() {
         super.awakeFromNib()
         setUpUI()
-        // Giá trị nhỏ và lớn nhất của slider
+        // Cài đặt giá trị cho slider
         rangeSlider.minimumValue = 0
         rangeSlider.maximumValue = 50
-        // Gán giá trị mặc định cho slider
         rangeSlider.lowerValue = 20
         rangeSlider.upperValue = 30
         updateResultLabel(lowerValue: rangeSlider.lowerValue, upperValue: rangeSlider.upperValue)
@@ -175,51 +176,22 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     
     // Chỉnh sửa ảnh người dùng
     @IBAction func editImageUser(_ sender: Any) {
+        
         isAddingPetImage = false
         isAddingUserImage = true
         self.window?.rootViewController?.present(userImagePicker, animated: true, completion: nil)
     }
     
-    func setUpUI(){
-        let attributedText = NSAttributedString(string: "Edit", attributes: [
-            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
-        ])
-        imageOwn.layer.cornerRadius = imageOwn.frame.height / 2
-        viewImageOwn.layer.cornerRadius = viewImageOwn.frame.height / 2
-        imagePet.layer.cornerRadius = 10
-        logOut.layer.borderWidth = 1.0
-        logOut.layer.cornerRadius = logOut.frame.height / 2
-        logOut.layer.borderColor = UIColor(red: 0.766, green: 0.766, blue: 0.766, alpha: 1).cgColor
-        viewImagePet.layer.cornerRadius = 30
-        editBtn1.setAttributedTitle(attributedText, for: .normal)
-        editBtn2.setAttributedTitle(attributedText, for: .normal)
-        viewAge.setUpView()
-        viewName.setUpView()
-        viewGender.setUpView()
-        viewLocation.setUpView()
-        viewNamePet.setUpView()
-        viewGenderPet.setUpView()
-        viewTypePet.setUpView()
-        viewAgePet.setUpView()
-        viewShowMe.setUpView()
-        viewAgeShowMe.setUpView()
-        viewBtn1.layer.cornerRadius = viewBtn1.frame.height / 2
-        viewBtn1.backgroundColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
-        resultSlider.tintColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
+    @IBAction func editBtnHandle(_ sender: Any) {
+        delegate?.editBtnTapped()
     }
     
-    // Sử dụng ActionSheetStringPicker để hiển thị UIPickerView
-    func showGenderPicker() {
-        ActionSheetStringPicker.show(withTitle: "Select Gender", rows: gender, initialSelection: 0, doneBlock: { [weak self] picker, selectedIndex, selectedValue in
-            guard let selectedGender = selectedValue as? String else { return }
-            self?.currentUser?.gender = selectedGender
-            self?.showGender.setTitle(selectedGender, for: .normal)
-            
-            if let currentUser = Auth.auth().currentUser{
-                self?.databaseRef.child("user/\(currentUser.uid)/showMe").setValue(selectedGender)
-                self?.delegate?.showMeValueChange(selectedGender: selectedGender)
-            }
-        }, cancel: nil, origin: self)
+    @IBAction func editBtnPetHandle(_ sender: Any) {
+        delegate?.editBtnTappedPet()
+    }
+    
+    @IBAction func selectGenderBtn(_ sender: Any) {
+        showGenderPicker()
     }
     
     private func uploadUserImage(_ image: UIImage) {
@@ -294,27 +266,46 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         }
     }
     
-    @IBAction func editBtnHandle(_ sender: Any) {
-        delegate?.editBtnTapped()
+    func setUpUI(){
+        let attributedText = NSAttributedString(string: "Edit", attributes: [
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ])
+        imageOwn.layer.cornerRadius = imageOwn.frame.height / 2
+        viewImageOwn.layer.cornerRadius = viewImageOwn.frame.height / 2
+        imagePet.layer.cornerRadius = 10
+        logOut.layer.borderWidth = 1.0
+        logOut.layer.cornerRadius = logOut.frame.height / 2
+        logOut.layer.borderColor = UIColor(red: 0.766, green: 0.766, blue: 0.766, alpha: 1).cgColor
+        viewImagePet.layer.cornerRadius = 30
+        editBtn1.setAttributedTitle(attributedText, for: .normal)
+        editBtn2.setAttributedTitle(attributedText, for: .normal)
+        viewAge.setUpView()
+        viewName.setUpView()
+        viewGender.setUpView()
+        viewLocation.setUpView()
+        viewNamePet.setUpView()
+        viewGenderPet.setUpView()
+        viewTypePet.setUpView()
+        viewAgePet.setUpView()
+        viewShowMe.setUpView()
+        viewAgeShowMe.setUpView()
+        viewBtn1.layer.cornerRadius = viewBtn1.frame.height / 2
+        viewBtn1.backgroundColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
+        resultSlider.tintColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
     }
     
-    @IBAction func editBtnPetHandle(_ sender: Any) {
-        delegate?.editBtnTappedPet()
-    }
-    
-    @IBAction func selectGenderBtn(_ sender: Any) {
-        showGenderPicker()
-    }
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return gender.count
-    }
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return gender[row]
+    // Sử dụng ActionSheetStringPicker để hiển thị UIPickerView
+    func showGenderPicker() {
+        ActionSheetStringPicker.show(withTitle: "Select Gender", rows: gender, initialSelection: 0, doneBlock: { [weak self] picker, selectedIndex, selectedValue in
+            guard let selectedGender = selectedValue as? String else { return }
+            self?.currentUser?.gender = selectedGender
+            self?.showGender.setTitle(selectedGender, for: .normal)
+            
+            if let currentUser = Auth.auth().currentUser{
+                self?.databaseRef.child("user/\(currentUser.uid)/showMe").setValue(selectedGender)
+                self?.delegate?.showMeValueChange(selectedGender: selectedGender)
+            }
+        }, cancel: nil, origin: self)
     }
     
     func hideView(){
@@ -329,6 +320,18 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
         logOut.isHidden = true
         viewBtn1.isHidden = true
     }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return gender.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gender[row]
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
 }
 
 extension UIView {
@@ -341,8 +344,7 @@ extension UIView {
 }
 
 extension ProfileTableViewCell: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]){
         guard let image = info[.originalImage] as? UIImage else {
             picker.dismiss(animated: true, completion: nil)
             return

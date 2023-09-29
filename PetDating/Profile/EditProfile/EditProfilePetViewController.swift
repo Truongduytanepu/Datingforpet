@@ -21,25 +21,12 @@ class EditProfilePetViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationbar()
-        // Hiển thị thông tin placeholder của thú cưng
         nameTF.text = currentPetProfile?.name
         genderTF.text = currentPetProfile?.gender
         typeTF.text = currentPetProfile?.type
         ageTF.text = "\(currentPetProfile?.age ?? 0)"
     }
-    func setUpNavigationbar(){
-        // Hiển thị Navigationbar
-        navigationController?.isNavigationBarHidden = false
-        navigationController?.navigationBar.tintColor = .black
-        // Custom back navigation
-        let backImage = UIImage(named: "back")
-        self.navigationController?.navigationBar.backIndicatorImage = backImage
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
-        self.navigationController?.navigationBar.backItem?.title = ""
-        
-        //setup nút Save
-        saveBtn.layer.cornerRadius = saveBtn.frame.height/2
-    }
+    
     @IBAction func saveEditBtn(_ sender: Any) {
         if let currentUser = currentUser{
             if let newName = nameTF.text,
@@ -65,5 +52,19 @@ class EditProfilePetViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    func setUpNavigationbar(){
+        // Hiển thị Navigationbar
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.tintColor = .black
+        // Custom back navigation
+        let backImage = UIImage(named: "back")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.backItem?.title = ""
+        
+        //setup nút Save
+        saveBtn.layer.cornerRadius = saveBtn.frame.height/2
     }
 }

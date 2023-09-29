@@ -23,13 +23,14 @@ class SetProfileUserViewController: UIViewController {
     @IBOutlet weak var nameTF: UITextField!
     var selectedImage: UIImage?
     private let storage = Storage.storage().reference()
-    private var databaseRef: DatabaseReference!
+    private var databaseRef = Database.database().reference()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        databaseRef = Database.database().reference()
-        setUpUI()
+        imageUser.layer.cornerRadius = imageUser.frame.height / 2
+        viewImage.layer.cornerRadius = viewImage.frame.height / 2
+        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
     
     
@@ -70,7 +71,12 @@ class SetProfileUserViewController: UIViewController {
                 "name": newName,
                 "age": newAge,
                 "location": newLocation,
-                "gender": newGender
+                "gender": newGender,
+                "sliderValue": [
+                    "upper": 20,
+                    "lower": 0
+                ],
+                "showMe": "Male"
             ]
             let userRef = databaseRef.child("user").child(currentUser.uid)
             userRef.updateChildValues(userData) { error, _ in
@@ -105,9 +111,6 @@ class SetProfileUserViewController: UIViewController {
                     return
                 }
                 
-                // lưu URL xuống cơ sở dữ liệu
-                print("Download URL: \(downloadURL)")
-                
                 // Cập nhật URL ảnh vào Realtime Database
                 self.databaseRef.child("user/\(Auth.auth().currentUser?.uid ?? "")/image").setValue(downloadURL.absoluteString)
                 
@@ -117,12 +120,6 @@ class SetProfileUserViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    func setUpUI(){
-        imageUser.layer.cornerRadius = imageUser.frame.height / 2
-        viewImage.layer.cornerRadius = viewImage.frame.height / 2
-        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
 }
 

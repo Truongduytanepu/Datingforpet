@@ -12,10 +12,6 @@ import FirebaseDatabase
 import MBProgressHUD
 import SCLAlertView
 
-protocol MessageDisplay{
-    func showLoading(isShow: Bool)
-}
-
 struct UserBot {
     var uid: String
     var name: String
@@ -51,11 +47,13 @@ class MessageViewController: UIViewController{
         navigationController?.setNavigationBarHidden(false, animated: true)
         showLoading(isShow: true)
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         showLoading(isShow: false)
     }
     
+    // Lấy dữ liệu và thông tin người dùng
     func fetchDataMatchUser() {
         let group = DispatchGroup() // Khởi tạo Dispatch Group
         showLoading(isShow: true)
@@ -68,6 +66,7 @@ class MessageViewController: UIViewController{
                         return
                     }
                     if let matches = snapshot.value as? [String: [String: Any]] {
+                        // Lặp qua tất cả matchid của matches
                         for (matchId, matchData) in matches {
                             if let participants = matchData["participants"] as? [String] {
                                 // Kiểm tra xem cả currentUser và userMatched đều tồn tại trong participants
@@ -118,7 +117,7 @@ class MessageViewController: UIViewController{
         }
     }
     
-    // Hàm để lấy danh sách userMatched
+    // lấy danh sách matchids
     func userMatched(completion: @escaping ([String]?) -> Void) {
         let databaseUserMatched = databaseRef.child("user").child(currentUser ?? "").child("matchIds")
         databaseUserMatched.observeSingleEvent(of: .value) { snapshot, error in
@@ -131,6 +130,7 @@ class MessageViewController: UIViewController{
         }
     }
     
+    // Lấy thông tin người dùng bot từ firebase bằng uid
     func fetchUserBot(withUID uid: String, completion: @escaping (UserBot?) -> Void) {
         let databaseUserRef = databaseRef.child("user").child(uid)
         databaseUserRef.observeSingleEvent(of: .value) { snapshot, error in
@@ -151,11 +151,11 @@ class MessageViewController: UIViewController{
         }
     }
     
+    // Lấy tin nhắn cuối cùng đẻ hiển thị lên giao diện
     func fetchLastMessageForMatch(matchId: String, completion: @escaping (String?) -> Void) {
         let messagesRef = databaseRef.child("matches").child(matchId).child("messages")
         
         messagesRef.queryLimited(toLast: 1).observe(.childAdded) { snapshot in
-            print("🥲 \(snapshot)")
             
             if let messageData = snapshot.value as? [String: Any],
                let messageText = messageData["content"] as? String {
@@ -194,18 +194,6 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
             let storyboard = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ChatViewController") as! ChatViewController
             storyboard.matchId = selectedMatchId
             navigationController?.pushViewController(storyboard, animated: true)
-        }
-    }
-}
-
-extension MessageViewController: MessageDisplay{
-    func showLoading(isShow: Bool) {
-        DispatchQueue.main.async {
-            if isShow {
-                MBProgressHUD.showAdded(to: self.view, animated: true)
-            } else {
-                MBProgressHUD.hide(for: self.view, animated: true)
-            }
         }
     }
 }

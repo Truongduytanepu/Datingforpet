@@ -49,12 +49,10 @@ class TestCollectionViewCell: UICollectionViewCell {
         
         avatarImageView.layer.cornerRadius = avatarImageView.bounds.height/2
         avatarImageView.layer.masksToBounds = true
-        
         petImageView.layer.cornerRadius = 10
         containerView.layer.borderWidth = 1
         containerView.layer.borderColor = UIColor(red: 0.941, green: 0.949, blue: 0.961, alpha: 1).cgColor
         containerView.layer.cornerRadius = 10
-        
         containerView.backgroundColor = UIColor(red: 0.941, green: 0.949, blue: 0.961, alpha: 1)
         
         //tapgesture

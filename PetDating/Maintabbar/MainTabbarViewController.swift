@@ -9,8 +9,6 @@ import UIKit
 import ESTabBarController_swift
 import MBProgressHUD
 
-
-
 class MainTabbarViewController: ESTabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
@@ -46,5 +44,18 @@ class MainTabbarViewController: ESTabBarController, UITabBarControllerDelegate {
         viewController.tabBarItem = tabBarItem
         let nav = UINavigationController(rootViewController: viewController)
         return nav
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        // Xác định index của tab được chọn
+        if let index = tabBarController.viewControllers?.firstIndex(of: viewController) {
+            // Hiển thị MBProgressHUD khi chuyển đến tab này
+            showLoading(isShow: true)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                // Ẩn MBProgressHUD khi thời gian đã đủ
+                self.showLoading(isShow: false)
+            }
+        }
     }
 }

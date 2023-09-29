@@ -19,31 +19,11 @@ class EditProfileOwnViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationbar()
-        
-        // Hiển thị placeholder thông tin của người dùng
         nameTF.text = currentUser?.name
         ageTF.text = "\(currentUser?.age ?? 0)"
         locationTF.text = currentUser?.location
         genderTF.text = currentUser?.gender
         
-    }
-    
-    // Custom navigationbar
-    func setUpNavigationbar(){
-        // Hiển thị Navigationbar
-        navigationController?.isNavigationBarHidden = false
-        
-        // Custom back navigation
-        let backImage = UIImage(named: "back")
-        self.navigationController?.navigationBar.backIndicatorImage = backImage
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
-        self.navigationController?.navigationBar.backItem?.title = ""
-        
-        // Setup nút back
-        navigationController?.navigationBar.tintColor = .black
-        
-        // custom nút Save
-        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
     
     @IBAction func saveEditHandle(_ sender: Any) {
@@ -71,5 +51,23 @@ class EditProfileOwnViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    // Custom navigationbar
+    func setUpNavigationbar(){
+        // Hiển thị Navigationbar
+        navigationController?.isNavigationBarHidden = false
+        
+        // Custom back navigation
+        let backImage = UIImage(named: "back")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.backItem?.title = ""
+        
+        // Setup nút back
+        navigationController?.navigationBar.tintColor = .black
+        
+        // custom nút Save
+        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
 }

@@ -38,6 +38,7 @@ class ProfileViewController: UIViewController {
     var isHideView = false
     override func viewDidLoad() {
         super.viewDidLoad()
+        showLoading(isShow: true)
         setupTableView()
         tableView.contentInsetAdjustmentBehavior = .never
         if let _ = user {
@@ -80,6 +81,7 @@ class ProfileViewController: UIViewController {
     }
     
     func fetchUser(){
+        showLoading(isShow: true)
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
         if let currentUser = Auth.auth().currentUser?.uid {
             let userRef = Database.database().reference().child("user").child(currentUser)
@@ -111,6 +113,7 @@ class ProfileViewController: UIViewController {
                 print("Failed to fetch user data:", error)
             }
         }
+        showLoading(isShow: false)
     }
     
     func setupTableView() {
@@ -177,10 +180,9 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
             cell.cellBackgroundView.sendSubviewToBack(imgView)
             tableView.backgroundColor = .clear
         }
+        showLoading(isShow: false)
         return cell
-        
     }
-    
 }
 
 extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
@@ -207,15 +209,6 @@ extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
 }
 
 extension ProfileViewController: ProfileTableViewCellDelegate{
-    func showLoading(isShow: Bool) {
-        DispatchQueue.main.async {
-            if isShow {
-                MBProgressHUD.showAdded(to: self.view, animated: true)
-            } else {
-                MBProgressHUD.hide(for: self.view, animated: true)
-            }
-        }
-    }
     
     func showMeValueChange(selectedGender: String) {
         tableView.reloadData()
@@ -225,6 +218,7 @@ extension ProfileViewController: ProfileTableViewCellDelegate{
         tableView.reloadData()
     }
     
+    // Chuyển đến màn EditProfileOwnViewController
     func editBtnTapped(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editProfileVC = storyboard.instantiateViewController(withIdentifier: "EditProfileOwnViewController") as! EditProfileOwnViewController
@@ -232,6 +226,7 @@ extension ProfileViewController: ProfileTableViewCellDelegate{
         navigationController?.pushViewController(editProfileVC, animated: true)
     }
     
+    // Chuyển đến màn EditProfilePetViewController
     func editBtnTappedPet(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editProfilePetVC = storyboard.instantiateViewController(withIdentifier: "EditProfilePetViewController") as! EditProfilePetViewController

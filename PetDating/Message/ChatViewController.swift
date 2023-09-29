@@ -6,6 +6,7 @@ import InputBarAccessoryView
 import MessageInputBar
 import Kingfisher
 
+// Mô hình đại diện cho một tin nhắn (Message) ứng với giao thức MessageType
 struct MockMessage: MessageType {
     var sender: SenderType
     var messageId: String
@@ -22,18 +23,17 @@ struct MockMessage: MessageType {
 
 class ChatViewController: MessagesViewController {
     
-    var messages: [MessageType] = []
-    var selectedUser: UserBot?
+    var messages: [MessageType] = [] // Danh sách các tin nhắn
+    var selectedUser: UserBot? // Người dùng đang thực hiện trò chuyện
     var matchId: String = ""
-    let currentUser = Auth.auth().currentUser?.uid
-    var receiverImageURL: String = ""
+    let currentUser = Auth.auth().currentUser?.uid // UID của người dùng hiện tại
     var pinkColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
     var greyColor = UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 1.0)
-    let databaseRef = Database.database().reference()
+    let databaseRef = Database.database().reference() // Tham chiếu đến cơ sở dữ liệu Firebase
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        observeMessages()
+        observeMessages() // Lắng nghe tin nhắn từ Firebase
         navigationController?.isNavigationBarHidden = false
         setUpNavigation()
         messagesCollectionView.messagesDataSource = self
@@ -43,6 +43,7 @@ class ChatViewController: MessagesViewController {
         messageInputBar.sendButton.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
         messagesCollectionView.reloadData()
         
+        // Cài đặt kích thước avatar và padding cho tin nhắn
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
             layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
             layout.textMessageSizeCalculator.incomingAvatarSize = .zero
@@ -54,7 +55,7 @@ class ChatViewController: MessagesViewController {
         }
     }
     
-    // lắng nghe tin nhắn từ firebase
+    // Lắng nghe tin nhắn từ Firebase
     func observeMessages() {
         guard let currentUser = currentUser, !matchId.isEmpty else {
             return
@@ -97,6 +98,7 @@ class ChatViewController: MessagesViewController {
         }
     }
     
+    // Gửi một tin nhắn mới
     func sendMessage(_ messageText: String) {
         guard !messageText.isEmpty else {
             return
@@ -105,15 +107,15 @@ class ChatViewController: MessagesViewController {
         let messageData: [String: Any] = [
             "sender": currentSender().senderId,
             "content": messageText,
-            "timestamp": Date().iso8601String // chuyển đổi thời gian thành chuỗi định dạng ISO 8601
+            "timestamp": Date().iso8601String // Chuyển đổi thời gian thành chuỗi định dạng ISO 8601
         ]
         
-        // thêm tin nhắn vào firebase
+        // Thêm tin nhắn vào Firebase
         let matchMessagesRef = databaseRef.child("matches").child(matchId).child("messages")
         let newMessageRef = matchMessagesRef.childByAutoId()
         newMessageRef.setValue(messageData)
         
-        //Tạo một đối tượng Message từ messageData và thêm nó vào mảng messages
+        // Tạo một đối tượng Message từ messageData và thêm nó vào mảng messages
         if let senderId = messageData["sender"] as? String,
            let text = messageData["content"] as? String,
            let timestampString = messageData["timestamp"] as? String,
@@ -124,11 +126,11 @@ class ChatViewController: MessagesViewController {
             self.messages.append(message)
             self.messages.sort(by: { $0.sentDate < $1.sentDate })
         }
-        
+//        messageInputBar.inputTextView.text = ""
         self.messagesCollectionView.reloadData()
     }
     
-    // chuyển đổi chuỗi thời gian thành kiểu Date
+    // Chuyển đổi chuỗi thời gian thành kiểu Date
     func convertTimestampStringToTimeInterval(_ timestampString: String) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -136,6 +138,7 @@ class ChatViewController: MessagesViewController {
         return dateFormatter.date(from: timestampString)
     }
     
+    // Cài đặt giao diện đầu màn hình
     func setUpNavigation(){
         let backImage = UIImage(named: "back")
         self.navigationController?.navigationBar.backIndicatorImage = backImage
@@ -145,6 +148,7 @@ class ChatViewController: MessagesViewController {
     }
 }
 
+// Mở rộng ChatViewController để tuân thủ các giao thức của MessageKit
 extension ChatViewController: MessagesDataSource{
     func currentSender() -> SenderType {
         if let currentUser = Auth.auth().currentUser?.uid {
@@ -167,13 +171,10 @@ extension ChatViewController: MessagesDataSource{
     }
 }
 
+// Mở rộng ChatViewController để tuân thủ các giao thức của MessageKit cho giao diện và kiểu dáng tin nhắn
 extension ChatViewController: MessagesLayoutDelegate, MessagesDisplayDelegate {
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
         return isFromCurrentSender(message: message) ? pinkColor : greyColor
-    }
-    
-    func messageContainerSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-        return CGSize(width: 250, height: 50)
     }
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
@@ -183,15 +184,9 @@ extension ChatViewController: MessagesLayoutDelegate, MessagesDisplayDelegate {
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         avatarView.isHidden = true
     }
-    func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-        return .zero
-    }
-    
-    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
-        return .bubble
-    }
 }
 
+// Mở rộng lớp Date để có phương thức chuyển đổi thành chuỗi định dạng ISO 8601
 extension Date {
     var iso8601String: String {
         let dateFormatter = ISO8601DateFormatter()
@@ -213,4 +208,3 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
     }
 }
-

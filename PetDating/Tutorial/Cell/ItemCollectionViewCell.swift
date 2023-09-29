@@ -26,6 +26,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
         nextCallback?()
     }
     
+    // giải phóng bộ nhớ
     override func prepareForReuse() {
         super.prepareForReuse()
         tutorialImage.image = nil

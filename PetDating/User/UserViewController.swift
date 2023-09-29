@@ -33,7 +33,7 @@ struct Pet {
     var type: String?
 }
 
-class UserViewController: UIViewController {
+class UserViewController: UIViewController, UICollectionViewDelegate {
     
     private var users: [User] = []
     private var databaseRef = Database.database().reference()
@@ -133,12 +133,12 @@ class UserViewController: UIViewController {
                     }
                 }
                 
-                // Lấy thông tin pet của người dùng đang xét
+                // Lấy thông tin pet của người dùng đang đăng nhập
                 if let petDict = userDict["pet"] as? [String: Any],
                    let petAge = petDict["age"] as? Int,
                    let petGender = petDict["gender"] as? String {
                     
-                    // Kiểm tra gender của pet trùng với showMe của người dùng đăng nhập
+                    // Kiểm tra gender của pet trùng với showme của người dùng đang đăng nhập không
                     if let currentUserInfo = userDicts[currentUserId],
                        let currentUserSliderValueDict = currentUserInfo["sliderValue"] as? [String: Any],
                        let currentUserLowerValue = currentUserSliderValueDict["lower"] as? Int,
@@ -182,20 +182,12 @@ extension UserViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TestCollectionViewCell", for: indexPath) as! TestCollectionViewCell
-        
         let user = users[indexPath.item]
-        
         cell.delegate = self
         cell.user = user
         cell.indexPath = indexPath
         return cell
     }
-    
-}
-
-// Thêm extension UICollectionViewDelegate xử lý các tương tác và sự kiện trong UICollectionView
-extension UserViewController: UICollectionViewDelegate {
-    
 }
 
 extension UserViewController: UICollectionViewDelegateFlowLayout {
@@ -214,15 +206,6 @@ extension UserViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension UserViewController: TestCollectionViewCellDelegate{
-    func showLoading(isShow: Bool) {
-        DispatchQueue.main.async {
-            if isShow {
-                MBProgressHUD.showAdded(to: self.view, animated: true)
-            } else {
-                MBProgressHUD.hide(for: self.view, animated: true)
-            }
-        }
-    }
     
     func petImageTapped(_ user: User) {
         let profileStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -394,7 +377,6 @@ extension UserViewController: TestCollectionViewCellDelegate{
             
             // Lấy UID của người dùng hiện tại
             guard let currentUserId = Auth.auth().currentUser?.uid else {
-                // Không có người dùng đăng nhập, không làm gì cả
                 return
             }
             

@@ -22,11 +22,13 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var facebookBtn: UIButton!
     var check: Bool = true
     var checkPassword: Bool = true
+    let userRef = Database.database().reference().child("user")
+    let currentUser = Auth.auth().currentUser
     @IBOutlet weak var btnRmm: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpView()
-        emailTF.text = "truongduytanabcd@gmail.com"
+        emailTF.text = "abv@gmail.com"
         passwordTF.text = "123456"
     }
     
@@ -48,21 +50,6 @@ class LoginViewController: UIViewController {
         } else {
             btnRmm.setImage(UIImage(named: "check"), for: .normal)
         }
-    }
-    func setUpView(){
-        setUpButton(button: appleBtn)
-        setUpButton(button: facebookBtn)
-        setUpButton(button: googleBtn)
-        signInBtn.layer.cornerRadius = 25
-    }
-    
-    func setUpButton(button: UIButton) {
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
-        button.layer.cornerRadius = 20
-        button.backgroundColor = .white
-        button.clipsToBounds = true
     }
     @IBAction func createAccountHandle(_ sender: Any) {
         if let navigationController = navigationController {
@@ -102,10 +89,28 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    func setUpView(){
+        // Thiết lập giao diện cho các nút và các phần tử UI khác
+        setUpButton(button: appleBtn)
+        setUpButton(button: facebookBtn)
+        setUpButton(button: googleBtn)
+        signInBtn.layer.cornerRadius = 25
+    }
+    
+    func setUpButton(button: UIButton) {
+        // Thiết lập giao diện cho các nút
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.setTitleColor(UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0), for: .normal)
+        button.layer.cornerRadius = 20
+        button.backgroundColor = .white
+        button.clipsToBounds = true
+    }
+    
     func userHasProfile(completion: @escaping (Bool, Bool) -> Void) {
-        if let currentUser = Auth.auth().currentUser {
-            let databaseRef = Database.database().reference()
-            databaseRef.child("user").child(currentUser.uid).observeSingleEvent(of: .value) { snapshot in
+        // Kiểm tra xem người dùng đã tạo thông tin cá nhân và thông tin thú cưng chưa
+        if let currentUser = currentUser{
+            userRef.child(currentUser.uid).observeSingleEvent(of: .value) { snapshot in
                 if let userDict = snapshot.value as? [String: Any] {
                     let hasProfile = true
                     let hasPetInfo = userDict["pet"] != nil

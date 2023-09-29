@@ -14,9 +14,12 @@ class TutorialViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupCollectionView()
-        
+        setupDataSource()
+    }
+    
+    // Cài đặt dữ liệu cho trang hướng dẫn
+    private func setupDataSource() {
         dataSource = [
             Tutorial(image: "tutorial00", title: "Find your pet a friend or a companion."),
             Tutorial(image: "tutorial000", title: "Get to know your pet's fan.")
@@ -28,22 +31,23 @@ class TutorialViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        //Đăng ký custom collection view cell
+        // Đăng ký custom collection view cell
         collectionView.register(UINib(nibName: "ItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ItemCollectionViewCell")
         collectionView.backgroundColor = .white
         
         if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            // Loại bỏ khoảng cách giữa các hàng và cột
             flowLayout.minimumLineSpacing = 0
             flowLayout.minimumInteritemSpacing = 0
             flowLayout.estimatedItemSize = .zero
             flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             flowLayout.scrollDirection = .horizontal
         }
-        collectionView.isPagingEnabled = true
-        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isPagingEnabled = true // chế độ phân trang
+        collectionView.showsHorizontalScrollIndicator = false // ẩn thanh cuộn ngang
     }
     
-    //Hàm chuyển màn sang register và login
+    // Chuyển sang màn hình đăng nhập sau khi hoàn thành hướng dẫn
     private func routeToAuthNavigation() {
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let loginVC = mainStoryboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
@@ -54,7 +58,7 @@ class TutorialViewController: UIViewController {
     }
 }
 
-//MARK: - UICollectionViewDataSource:
+
 extension TutorialViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.count
@@ -68,7 +72,7 @@ extension TutorialViewController: UICollectionViewDataSource {
         cell.bindData(index: indexPath.row,
                       image: tutorialModel.image,
                       title: tutorialModel.title) { [weak self] in
-            guard let self = self else {return}
+            guard let self = self else { return }
             if indexPath.row + 1 == self.dataSource.count {
                 self.routeToAuthNavigation()
                 UserDefaults.standard.set(true, forKey: "tutorialCompleted")
@@ -79,10 +83,13 @@ extension TutorialViewController: UICollectionViewDataSource {
                 self.collectionView.isPagingEnabled = true
             }
         }
+        
+        // Tạo attributed string cho "friend"
         let attributedString = NSMutableAttributedString(string: tutorialModel.title)
         let range = (tutorialModel.title as NSString).range(of: "friend")
         attributedString.addAttribute(.foregroundColor, value: UIColor.systemPink, range: range)
         cell.titleLbl.attributedText = attributedString
+        
         return cell
     }
 }

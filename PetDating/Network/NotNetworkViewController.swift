@@ -45,10 +45,6 @@ class NotNetworkViewController: UIViewController {
                     AppDelegate.scene?.routeToLogin()
                 }
             }
-        } else {
-            // Không có kết nối mạng
-            print("😂")
-            // Hoặc bạn có thể thực hiện hướng điều hướng khác tại đây nếu cần
         }
     }
     

@@ -22,13 +22,14 @@ class SetProfilePetViewController: UIViewController {
     @IBOutlet weak var genderTF: UITextField!
     @IBOutlet weak var nameTF: UITextField!
     private let storage = Storage.storage().reference()
-    private var databaseRef: DatabaseReference!
+    private var databaseRef = Database.database().reference()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        databaseRef = Database.database().reference()
-        setUpUI()
+        imagePet.layer.cornerRadius = 15
+        viewImage.layer.cornerRadius = 15
+        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
     
     @IBAction func editImage(_ sender: Any) {
@@ -62,7 +63,7 @@ class SetProfilePetViewController: UIViewController {
             "name": newName,
             "age": newAge,
             "type": newtype,
-            "gender": newGender
+            "gender": newGender,
         ]
         let petRef = databaseRef.child("user").child(Auth.auth().currentUser?.uid ?? "").child("pet")
         petRef.updateChildValues(userData) { error, _ in
@@ -78,7 +79,7 @@ class SetProfilePetViewController: UIViewController {
             }
         }
     }
-    
+
     private func uploadPetImg(_ image: UIImage) {
         guard let imageData = image.pngData() else {
             return
@@ -88,10 +89,6 @@ class SetProfilePetViewController: UIViewController {
         
         // Tải lên ảnh thú cưng
         petImageRef.putData(imageData, metadata: nil) { metadata, error in
-            if let error = error {
-                print("Error updating pet image: \(error)")
-                return
-            }
             
             // Lấy URL tải về ảnh thú cưng
             petImageRef.downloadURL { url, error in
@@ -109,12 +106,6 @@ class SetProfilePetViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    func setUpUI(){
-        imagePet.layer.cornerRadius = 15
-        viewImage.layer.cornerRadius = 15
-        saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
     }
 }
 

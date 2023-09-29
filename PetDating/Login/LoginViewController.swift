@@ -59,6 +59,7 @@ class LoginViewController: UIViewController {
         }
     }
     @IBAction func signInBtn(_ sender: Any) {
+        showLoading(isShow: true)
         let email = emailTF.text ?? ""
         let password = passwordTF.text ?? ""
         
@@ -75,7 +76,7 @@ class LoginViewController: UIViewController {
             }else{
                 // Đăng nhập thành công
                 UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                strongSelf.userHasProfile { hasProfile, hasPetInfo in
+                AppDelegate.scene?.userHasProfile { hasProfile, hasPetInfo in
                     if hasProfile && hasPetInfo {
                         // Chuyển hướng người dùng vào màn hình chính
                         AppDelegate.scene?.routeToMainController()
@@ -105,22 +106,5 @@ class LoginViewController: UIViewController {
         button.layer.cornerRadius = 20
         button.backgroundColor = .white
         button.clipsToBounds = true
-    }
-    
-    func userHasProfile(completion: @escaping (Bool, Bool) -> Void) {
-        // Kiểm tra xem người dùng đã tạo thông tin cá nhân và thông tin thú cưng chưa
-        if let currentUser = currentUser{
-            userRef.child(currentUser.uid).observeSingleEvent(of: .value) { snapshot in
-                if let userDict = snapshot.value as? [String: Any] {
-                    let hasProfile = true
-                    let hasPetInfo = userDict["pet"] != nil
-                    completion(hasProfile, hasPetInfo)
-                } else {
-                    completion(false, false)
-                }
-            }
-        } else {
-            completion(false, false)
-        }
     }
 }

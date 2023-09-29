@@ -176,7 +176,6 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     
     // Chỉnh sửa ảnh người dùng
     @IBAction func editImageUser(_ sender: Any) {
-        
         isAddingPetImage = false
         isAddingUserImage = true
         self.window?.rootViewController?.present(userImagePicker, animated: true, completion: nil)

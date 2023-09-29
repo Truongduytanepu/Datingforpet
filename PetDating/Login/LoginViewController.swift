@@ -42,6 +42,7 @@ class LoginViewController: UIViewController {
             hidePassword.setImage(UIImage(named: "show"), for: .normal)
         }
     }
+    
     @IBAction func checkRemember(_ sender: Any) {
         btnRmm.isSelected = !btnRmm.isSelected
         check = !check
@@ -51,6 +52,7 @@ class LoginViewController: UIViewController {
             btnRmm.setImage(UIImage(named: "check"), for: .normal)
         }
     }
+    
     @IBAction func createAccountHandle(_ sender: Any) {
         if let navigationController = navigationController {
             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -58,6 +60,7 @@ class LoginViewController: UIViewController {
             navigationController.pushViewController(registerVC, animated: true)
         }
     }
+    
     @IBAction func signInBtn(_ sender: Any) {
         showLoading(isShow: true)
         let email = emailTF.text ?? ""
@@ -90,6 +93,7 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    
     func setUpView(){
         // Thiết lập giao diện cho các nút và các phần tử UI khác
         setUpButton(button: appleBtn)

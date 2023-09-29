@@ -118,13 +118,13 @@
 				265911062A8A6C1B00FB2B96 /* Login */,
 				265910FE2A8A6C0E00FB2B96 /* Tutorial */,
 				265910E32A8A6A2E00FB2B96 /* AppDelegate.swift */,
+				26714C782AC6AA450072EB72 /* ShowLoading.swift */,
 				265910E52A8A6A2E00FB2B96 /* SceneDelegate.swift */,
 				265911342A8A6D0E00FB2B96 /* Assets.xcassets */,
 				265910F92A8A6BB500FB2B96 /* Main.storyboard */,
 				265910EE2A8A6A3000FB2B96 /* LaunchScreen.storyboard */,
 				265910F12A8A6A3000FB2B96 /* Info.plist */,
 				265910F72A8A6A9A00FB2B96 /* GoogleService-Info.plist */,
-				26714C782AC6AA450072EB72 /* ShowLoading.swift */,
 			);
 			path = PetDating;
 			sourceTree = "<group>";

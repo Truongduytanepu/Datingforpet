@@ -105,9 +105,6 @@ PODS:
   - Kingfisher (7.8.1)
   - leveldb-library (1.22.2)
   - MBProgressHUD (1.2.0)
-  - MessageInputBar (0.4.1):
-    - MessageInputBar/Core (= 0.4.1)
-  - MessageInputBar/Core (0.4.1)
   - MessageKit (3.8.0):
     - InputBarAccessoryView (~> 5.5.0)
   - nanopb (2.30909.0):
@@ -131,7 +128,6 @@ DEPENDENCIES:
   - IQKeyboardManagerSwift
   - Kingfisher
   - MBProgressHUD (~> 1.2.0)
-  - MessageInputBar
   - MessageKit
   - ReachabilitySwift
   - SCLAlertView
@@ -161,7 +157,6 @@ SPEC REPOS:
     - Kingfisher
     - leveldb-library
     - MBProgressHUD
-    - MessageInputBar
     - MessageKit
     - nanopb
     - PromisesObjC
@@ -192,7 +187,6 @@ SPEC CHECKSUMS:
   Kingfisher: 63f677311d36a3473f6b978584f8a3845d023dc5
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
-  MessageInputBar: e81c7535347f1f7b923de7080409a535a004b6e4
   MessageKit: a1ba0c69ebead94029867853eb44dd05b9b3f453
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
@@ -200,6 +194,6 @@ SPEC CHECKSUMS:
   SCLAlertView: 6a77bb2edfc65e04dbe57725546cb4107a506b85
   WARangeSlider: 54b3e0853b8d16c444fd539005901aecee86837d
 
-PODFILE CHECKSUM: c0d50b6a9d380f2372babd75804bf53064b46037
+PODFILE CHECKSUM: c6c9c1b262fe7efcba4df38bb9f70f7445419392
 
 COCOAPODS: 1.12.1

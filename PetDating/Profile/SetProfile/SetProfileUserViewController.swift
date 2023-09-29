@@ -11,6 +11,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import Kingfisher
 import SCLAlertView
+import ActionSheetPicker_3_0
 
 class SetProfileUserViewController: UIViewController {
     
@@ -20,7 +21,9 @@ class SetProfileUserViewController: UIViewController {
     @IBOutlet weak var ageTF: UITextField!
     @IBOutlet weak var locationTF: UITextField!
     @IBOutlet weak var genderTF: UITextField!
+    @IBOutlet weak var showGender: UIButton!
     @IBOutlet weak var nameTF: UITextField!
+    let gender = ["Male", "Female", "Other"]
     var selectedImage: UIImage?
     private let storage = Storage.storage().reference()
     private var databaseRef = Database.database().reference()
@@ -92,6 +95,24 @@ class SetProfileUserViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func selectGender(_ sender: Any) {
+        showGenderPicker(from: showGender)
+    }
+    
+    func showGenderPicker(from originView: UIView) {
+        ActionSheetStringPicker.show(
+            withTitle: "Select Gender",
+            rows: gender,
+            initialSelection: 0,
+            doneBlock: { [weak self] picker, selectedIndex, selectedValue in
+                guard let selectedGender = selectedValue as? String else { return }
+                self?.genderTF.text = selectedGender
+            },
+            cancel: nil,
+            origin: originView
+        )
     }
     
     private func uploadUserImg(_ image: UIImage) {

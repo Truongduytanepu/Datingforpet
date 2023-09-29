@@ -14,13 +14,12 @@ target 'PetDating' do
   pod "ESTabBarController-swift"
   pod 'ActionSheetPicker-3.0'
   pod "WARangeSlider"
-  pod "MessageKit"
   pod 'IQKeyboardManagerSwift'
   pod 'AnimatedCollectionViewLayout'
   pod 'MBProgressHUD', '~> 1.2.0'
   pod 'SCLAlertView'
-  pod "MessageInputBar"
   pod 'ReachabilitySwift'
+  pod 'MessageKit'
   
   # Pods for PetDating
 

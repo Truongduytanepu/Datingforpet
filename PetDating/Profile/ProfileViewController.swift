@@ -41,17 +41,17 @@ class ProfileViewController: UIViewController {
         showLoading(isShow: true)
         setupTableView()
         tableView.contentInsetAdjustmentBehavior = .never
-        if let _ = user {
-            fetchUserProfile()
-        } else {
-            fetchUser()
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
         showLoading(isShow: true)
+        if let _ = user {
+            fetchUserProfile()
+        } else {
+            fetchUser()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

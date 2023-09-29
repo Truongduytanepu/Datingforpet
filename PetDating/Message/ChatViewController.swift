@@ -1,10 +1,9 @@
 import UIKit
-import MessageKit
 import FirebaseAuth
 import FirebaseDatabase
-import InputBarAccessoryView
-import MessageInputBar
 import Kingfisher
+import MessageKit
+import InputBarAccessoryView
 
 // Mô hình đại diện cho một tin nhắn (Message) ứng với giao thức MessageType
 struct MockMessage: MessageType {
@@ -29,13 +28,14 @@ class ChatViewController: MessagesViewController {
     let currentUser = Auth.auth().currentUser?.uid // UID của người dùng hiện tại
     var pinkColor = UIColor(red: 250/255, green: 86/255, blue: 114/255, alpha: 1.0)
     var greyColor = UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 1.0)
-    let databaseRef = Database.database().reference() // Tham chiếu đến cơ sở dữ liệu Firebase
+    let databaseRef = Database.database().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         observeMessages() // Lắng nghe tin nhắn từ Firebase
         navigationController?.isNavigationBarHidden = false
         setUpNavigation()
+        self.title = ""
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
@@ -126,7 +126,6 @@ class ChatViewController: MessagesViewController {
             self.messages.append(message)
             self.messages.sort(by: { $0.sentDate < $1.sentDate })
         }
-//        messageInputBar.inputTextView.text = ""
         self.messagesCollectionView.reloadData()
     }
     
@@ -197,6 +196,7 @@ extension Date {
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         sendMessage(text)
+        messageInputBar.inputTextView.text = String()
     }
     
     func inputBar(_ inputBar: InputBarAccessoryView, didChangeIntrinsicContentTo size: CGSize) {

@@ -18,7 +18,7 @@ class TutorialViewController: UIViewController {
         setupDataSource()
     }
     
-    // Cài đặt dữ liệu cho trang hướng dẫn
+    // Cài đặt dữ liệu cho tutorial
     private func setupDataSource() {
         dataSource = [
             Tutorial(image: "tutorial00", title: "Find your pet a friend or a companion."),
@@ -47,7 +47,7 @@ class TutorialViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false // ẩn thanh cuộn ngang
     }
     
-    // Chuyển sang màn hình đăng nhập sau khi hoàn thành hướng dẫn
+    // Chuyển sang màn hình đăng nhập sau khi hoàn thành tutorial
     private func routeToAuthNavigation() {
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let loginVC = mainStoryboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
@@ -57,7 +57,6 @@ class TutorialViewController: UIViewController {
         UserDefaults.standard.set(true, forKey: "tutorialCompleted")
     }
 }
-
 
 extension TutorialViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

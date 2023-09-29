@@ -11,6 +11,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import Kingfisher
 import SCLAlertView
+import ActionSheetPicker_3_0
 
 class SetProfilePetViewController: UIViewController {
     
@@ -21,6 +22,9 @@ class SetProfilePetViewController: UIViewController {
     @IBOutlet weak var typeTF: UITextField!
     @IBOutlet weak var genderTF: UITextField!
     @IBOutlet weak var nameTF: UITextField!
+    @IBOutlet weak var showGender: UIButton!
+    let gender = ["Male", "Female", "Other"]
+    var currentUser: UserProfile?
     private let storage = Storage.storage().reference()
     private var databaseRef = Database.database().reference()
     
@@ -79,6 +83,24 @@ class SetProfilePetViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func selectGenderBtn(_ sender: Any) {
+        showGenderPicker(from: showGender)
+    }
+    
+    func showGenderPicker(from originView: UIView) {
+        ActionSheetStringPicker.show(
+            withTitle: "Select Gender",
+            rows: gender,
+            initialSelection: 0,
+            doneBlock: { [weak self] picker, selectedIndex, selectedValue in
+                guard let selectedGender = selectedValue as? String else { return }
+                self?.genderTF.text = selectedGender
+            },
+            cancel: nil,
+            origin: originView
+        )
+    }
 
     private func uploadPetImg(_ image: UIImage) {
         guard let imageData = image.pngData() else {
@@ -107,6 +129,8 @@ class SetProfilePetViewController: UIViewController {
             }
         }
     }
+    
+    
 }
 
 extension SetProfilePetViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{

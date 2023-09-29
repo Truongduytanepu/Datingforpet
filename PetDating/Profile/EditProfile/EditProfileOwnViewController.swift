@@ -8,13 +8,16 @@
 import UIKit
 import FirebaseDatabase
 import SCLAlertView
+import ActionSheetPicker_3_0
 
 class EditProfileOwnViewController: UIViewController {
     @IBOutlet weak var nameTF: UITextField!
     @IBOutlet weak var ageTF: UITextField!
     @IBOutlet weak var locationTF: UITextField!
     @IBOutlet weak var saveBtn: UIButton!
+    @IBOutlet weak var genderBtn: UIButton!
     @IBOutlet weak var genderTF: UITextField!
+    let gender = ["Male", "Female", "Other"]
     var currentUser: UserProfile? // Lấy thông tin người dùng từ màn ProflieViewController
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +54,24 @@ class EditProfileOwnViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func selectGender(_ sender: Any) {
+        showGenderPicker(from: genderBtn)
+    }
+    
+    func showGenderPicker(from originView: UIView) {
+        ActionSheetStringPicker.show(
+            withTitle: "Select Gender",
+            rows: gender,
+            initialSelection: 0,
+            doneBlock: { [weak self] picker, selectedIndex, selectedValue in
+                guard let selectedGender = selectedValue as? String else { return }
+                self?.genderTF.text = selectedGender
+            },
+            cancel: nil,
+            origin: originView
+        )
     }
     
     // Custom navigationbar

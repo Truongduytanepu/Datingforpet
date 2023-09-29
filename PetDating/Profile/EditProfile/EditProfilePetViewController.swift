@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseDatabase
 import SCLAlertView
+import ActionSheetPicker_3_0
 
 class EditProfilePetViewController: UIViewController {
     
@@ -16,6 +17,8 @@ class EditProfilePetViewController: UIViewController {
     @IBOutlet weak var genderTF: UITextField!
     @IBOutlet weak var nameTF: UITextField!
     @IBOutlet weak var saveBtn: UIButton!
+    @IBOutlet weak var showGender: UIButton!
+    let gender = ["Male", "Female", "Other"]
     var currentPetProfile: PetProfile?
     var currentUser: UserProfile?// Lấy thông tin người dùng từ màn ProflieViewController
     override func viewDidLoad() {
@@ -52,6 +55,23 @@ class EditProfilePetViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func selectGender(_ sender: Any) {
+        showGenderPicker(from: showGender)
+    }
+    func showGenderPicker(from originView: UIView) {
+        ActionSheetStringPicker.show(
+            withTitle: "Select Gender",
+            rows: gender,
+            initialSelection: 0,
+            doneBlock: { [weak self] picker, selectedIndex, selectedValue in
+                guard let selectedGender = selectedValue as? String else { return }
+                self?.genderTF.text = selectedGender
+            },
+            cancel: nil,
+            origin: originView
+        )
     }
     
     func setUpNavigationbar(){

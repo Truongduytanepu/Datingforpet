@@ -47,6 +47,7 @@ class UserViewController: UIViewController, UICollectionViewDelegate {
         
         // Ẩn thanh điều hướng khi profileviewcontroller xuất hiện
         navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.isNavigationBarHidden = true
         showLoading(isShow: false)
     }
     
@@ -71,9 +72,10 @@ class UserViewController: UIViewController, UICollectionViewDelegate {
         layout.animator = RotateInOutAttributesAnimator()
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
+        
         checkChange()
         fetchUserData()
-        self.navigationController?.isNavigationBarHidden = true
+        
     }
     
     func showAlert() {
@@ -117,7 +119,7 @@ class UserViewController: UIViewController, UICollectionViewDelegate {
                 return
             }
             
-            var fetchedUsers: [User] = []
+            var fetchedUsers: [User] = [] // mảng những user đủ điều kiện
             
             for (userId, userDict) in userDicts {
                 if userId == currentUserId {
@@ -218,7 +220,6 @@ extension UserViewController: TestCollectionViewCellDelegate{
     
     func matchUserHandle(user: User) {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
-            // Không có người dùng đăng nhập, không làm gì cả
             return
         }
         
@@ -243,6 +244,7 @@ extension UserViewController: TestCollectionViewCellDelegate{
         }
     }
     
+    // Thêm người dùng vào following của người dùng đang đăng nhập hiẹn tại
     func addUserIdToFollowingIds(_ userId: String, in userRef: DatabaseReference, completion: @escaping () -> Void) {
         userRef.child("followingIds").observeSingleEvent(of: .value) { snapshot in
             var followingIds = snapshot.value as? [String] ?? []
@@ -263,6 +265,7 @@ extension UserViewController: TestCollectionViewCellDelegate{
         }
     }
     
+    // Thêm người dùng hiện tại vào follower của người dùng được match
     func addCurrentUserIdToFollowerIds(_ currentUserId: String, in matchedUserRef: DatabaseReference, completion: @escaping () -> Void) {
         matchedUserRef.child("followerIds").observeSingleEvent(of: .value) { snapshot in
             var followerIds = snapshot.value as? [String] ?? []
@@ -282,6 +285,7 @@ extension UserViewController: TestCollectionViewCellDelegate{
             }
         }
     }
+    
     
     func checkAndAddMatchIds(in userRef: DatabaseReference, and matchedUserRef: DatabaseReference, completion: @escaping (Bool) -> Void) {
         // Lấy danh sách followingIds của người dùng hiện tại
@@ -371,7 +375,6 @@ extension UserViewController: TestCollectionViewCellDelegate{
         // Lấy danh sách matchIds từ userRef
         userRef.child("matchIds").observeSingleEvent(of: .value) { matchSnapshot in
             guard let matchIds = matchSnapshot.value as? [String] else {
-                // Không có matchIds, không làm gì cả
                 return
             }
             
@@ -388,7 +391,7 @@ extension UserViewController: TestCollectionViewCellDelegate{
                 participants.append(currentUserId)
                 
                 // Tạo một tham chiếu đến nhánh "matches" với childByAutoId
-                let matchesRef = Database.database().reference().child("matches").childByAutoId()
+                let matchesRef = self.databaseRef.child("matches").childByAutoId()
                 
                 // Cập nhật danh sách participants của matchesRef
                 matchesRef.child("participants").setValue(participants) { error, _ in

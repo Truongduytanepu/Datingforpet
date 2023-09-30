@@ -40,7 +40,7 @@ class BotTableViewCell: UITableViewCell {
         nameLbl.text = selectedUser.name
         
         if let imageURL = URL(string: selectedUser.image) {
-            let imageDefault = UIImage(named: "abc")
+            let imageDefault = UIImage(named: "")
             
             // Tải và hiển thị ảnh người dùng bằng Kingfisher
             imageUser.kf.setImage(

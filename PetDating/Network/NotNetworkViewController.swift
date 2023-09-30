@@ -28,7 +28,7 @@ class NotNetworkViewController: UIViewController {
         }
         // Kiểm tra trạng thái kết nối mạng
         if isNetworkReachable() {
-            // Có kết nối mạng, bạn có thể thực hiện xử lý tải lại màn hình khác tại đây
+            // Có kết nối mạngthực hiện xử lý tải lại màn hình khác tại đây
             let isTutorialCompleted = UserDefaults.standard.bool(forKey: "tutorialCompleted")
             let isSetProfileUser = UserDefaults.standard.bool(forKey: "isSetProfileUser")
             let isSetProfilePet = UserDefaults.standard.bool(forKey: "isSetProfilePet")

@@ -40,7 +40,7 @@ class MainTabbarViewController: ESTabBarController, UITabBarControllerDelegate {
         let normalImage = UIImage(named: image)
         let selectedImageName = "selected_" + image
         let selectedImage = UIImage(named: selectedImageName)?.withRenderingMode(.alwaysOriginal)
-        let tabBarItem = ESTabBarItem(CustomStyleTabBarContentView(), title: title.uppercased(), image: normalImage, selectedImage: selectedImage)
+        let tabBarItem = ESTabBarItem(CustomStyleTabBarContentView(), image: normalImage, selectedImage: selectedImage)
         viewController.tabBarItem = tabBarItem
         let nav = UINavigationController(rootViewController: viewController)
         return nav

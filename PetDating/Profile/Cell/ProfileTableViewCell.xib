@@ -548,6 +548,14 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mpQ-un-POM">
+                                <rect key="frame" x="10" y="60" width="48" height="38"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="back"/>
+                                <connections>
+                                    <action selector="backAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="BJu-4c-VDL"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -597,8 +605,10 @@
                             <constraint firstItem="3fI-jj-pRr" firstAttribute="top" secondItem="QRq-5O-v2b" secondAttribute="bottom" constant="10" id="kd3-BO-6aG"/>
                             <constraint firstAttribute="trailing" secondItem="QRq-5O-v2b" secondAttribute="trailing" constant="20" id="lvY-pQ-FNm"/>
                             <constraint firstAttribute="trailing" secondItem="dMW-Bk-BCK" secondAttribute="trailing" constant="20" id="m4E-rv-aJ1"/>
+                            <constraint firstItem="mpQ-un-POM" firstAttribute="top" secondItem="zmo-5i-jZX" secondAttribute="top" constant="60" id="mAO-DL-juH"/>
                             <constraint firstItem="Qb8-wr-eab" firstAttribute="leading" secondItem="zmo-5i-jZX" secondAttribute="leading" constant="40" id="oZF-97-N4Y"/>
                             <constraint firstAttribute="trailing" secondItem="Cl7-sz-eDc" secondAttribute="trailing" constant="20" id="q9S-40-s5K"/>
+                            <constraint firstItem="mpQ-un-POM" firstAttribute="leading" secondItem="zmo-5i-jZX" secondAttribute="leading" constant="10" id="rDc-40-xIK"/>
                             <constraint firstItem="eDO-yJ-FVc" firstAttribute="leading" secondItem="zmo-5i-jZX" secondAttribute="leading" constant="20" id="rvC-I3-spX"/>
                             <constraint firstItem="eDO-yJ-FVc" firstAttribute="top" secondItem="Qb8-wr-eab" secondAttribute="bottom" constant="30" id="sEy-er-SWR"/>
                             <constraint firstItem="dGW-Z1-GOQ" firstAttribute="top" secondItem="MYv-r0-QUa" secondAttribute="bottom" constant="10" id="sX6-Kf-A91"/>
@@ -625,6 +635,7 @@
             <connections>
                 <outlet property="ageOwn" destination="knN-nN-eJj" id="vYt-f0-l4e"/>
                 <outlet property="agePet" destination="0cI-jK-qyc" id="Quq-Nz-b8r"/>
+                <outlet property="backBtn" destination="mpQ-un-POM" id="ZeT-jy-d0n"/>
                 <outlet property="cellBackgroundView" destination="zmo-5i-jZX" id="JMs-hZ-qRR"/>
                 <outlet property="discoveryLbl" destination="BLe-hM-t2I" id="GdC-XP-Yhp"/>
                 <outlet property="editBtn1" destination="Cl7-sz-eDc" id="afa-eg-zKU"/>
@@ -665,6 +676,7 @@
     <resources>
         <image name="Group 26" width="34" height="34"/>
         <image name="avatar (1)" width="128" height="128"/>
+        <image name="back" width="24" height="24"/>
         <image name="cake" width="512" height="512"/>
         <image name="gender (1)" width="512" height="512"/>
         <image name="location-pin (1)" width="64" height="64"/>

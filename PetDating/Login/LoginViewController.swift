@@ -60,6 +60,15 @@ class LoginViewController: UIViewController {
             navigationController.pushViewController(registerVC, animated: true)
         }
     }
+    @IBAction func signInWithGoogle(_ sender: Any) {
+        showAlert()
+    }
+    @IBAction func signInWithApple(_ sender: Any) {
+        showAlert()
+    }
+    @IBAction func signInWithFacebook(_ sender: Any) {
+        showAlert()
+    }
     
     @IBAction func signInBtn(_ sender: Any) {
         showLoading(isShow: true)
@@ -110,5 +119,14 @@ class LoginViewController: UIViewController {
         button.layer.cornerRadius = 20
         button.backgroundColor = .white
         button.clipsToBounds = true
+    }
+    
+    func showAlert() {
+        // Tạo một cấu hình SCLAppearance để tùy chỉnh thông báo
+        let appearance = SCLAlertView.SCLAppearance(
+            showCircularIcon: true
+        )
+        let alertView = SCLAlertView(appearance: appearance)
+        alertView.showError("Error", subTitle: "The feature currently being developed is translation!")
     }
 }

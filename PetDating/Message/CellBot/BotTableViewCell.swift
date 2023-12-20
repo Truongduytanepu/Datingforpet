@@ -16,49 +16,52 @@ class BotTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLbl: UILabel!
     @IBOutlet weak var imageUser: UIImageView!
     var databaseRef = Database.database().reference()
-    var user: UserBot?
-    var fetchLastMessage: ((String, @escaping(String?)-> Void)->Void)?
-    var didSelectUser: ((UserBot) -> Void)?
-    
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        imageUser.layer.cornerRadius = imageUser.frame.height / 2
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    @objc func cellTapped() {
-        if let user = user {
-            didSelectUser?(user)
-        }
-    }
-    
-    // Cấu hình ô TableViewCell
-    func configure(with selectedUser: UserBot, matchId: String) {
-        nameLbl.text = selectedUser.name
+        var user: UserBot?
+        var fetchLastMessage: ((String, @escaping(String?)-> Void)->Void)?
+        var didSelectUser: ((UserBot) -> Void)?
         
-        if let imageURL = URL(string: selectedUser.image) {
-            let imageDefault = UIImage(named: "")
+        
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            imageUser.layer.cornerRadius = imageUser.frame.height / 2
+        }
+        
+        override func setSelected(_ selected: Bool, animated: Bool) {
+            super.setSelected(selected, animated: animated)
+        }
+        @objc func cellTapped() {
+            if let user = user {
+                didSelectUser?(user)
+            }
+        }
+        
+        // Cấu hình ô TableViewCell
+        func configure(with selectedUser: UserBot, matchId: String) {
+            nameLbl.text = selectedUser.name
             
-            // Tải và hiển thị ảnh người dùng bằng Kingfisher
-            imageUser.kf.setImage(
-                with: imageURL,
-                placeholder: imageDefault)
-        }
-        
-        if let fetchFunction = fetchLastMessage {
-            // Gọi hàm fetchLastMessage để lấy tin nhắn cuối cùng
-            fetchFunction(matchId) { lastMessage in
-                DispatchQueue.main.async {
-                    if let lastMessage = lastMessage, !lastMessage.isEmpty {
-                        self.chatLbl.text = lastMessage
-                    } else {
-                        self.chatLbl.text = "No message"
+            if let imageURL = URL(string: selectedUser.image) {
+                let imageDefault = UIImage(named: "")
+                
+                // Tải và hiển thị ảnh người dùng bằng Kingfisher
+                imageUser.kf.setImage(
+                    with: imageURL,
+                    placeholder: imageDefault)
+            }
+            
+            if let fetchFunction = fetchLastMessage {
+                // Gọi hàm fetchLastMessage để lấy tin nhắn cuối cùng
+                fetchFunction(matchId) { lastMessage in
+                    DispatchQueue.main.async {
+                        if let lastMessage = lastMessage, !lastMessage.isEmpty {
+                            self.chatLbl.text = lastMessage
+                        }
+                        else if ((lastMessage?.isEmpty) != nil) {
+                            self.chatLbl.text = "No message"
+                        }else{
+                            self.chatLbl.text = "You send image"
+                        }
                     }
                 }
             }
         }
     }
-}

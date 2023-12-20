@@ -20,6 +20,7 @@ protocol ProfileTableViewCellDelegate: AnyObject {
     func editBtnTappedPet()
     func sliderValueChange(lowerValue: Int, upperValue: Int)
     func showMeValueChange(selectedGender: String)
+    func backButton()
 }
 
 class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDataSource {
@@ -59,6 +60,7 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
     @IBOutlet weak var nameOwn: UILabel!
     @IBOutlet weak var editBtn1: UIButton!
     @IBOutlet weak var nameAndAgeOwn: UILabel!
+    @IBOutlet weak var backBtn: UIButton!
     
     var genderPickerView: UIPickerView!
     var gender: [String]!
@@ -107,6 +109,10 @@ class ProfileTableViewCell: UITableViewCell, UIPickerViewDelegate,UIPickerViewDa
                 }
             }
         }
+    }
+    
+    @IBAction func backAction(_ sender: Any) {
+        delegate?.backButton()
     }
     
     // Khởi tạo picker cho việc chọn ảnh

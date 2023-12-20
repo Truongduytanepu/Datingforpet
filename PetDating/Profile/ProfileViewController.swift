@@ -58,11 +58,7 @@ class ProfileViewController: UIViewController {
         showLoading(isShow: false)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        // Hiển thị thanh điều hướng khi Profileviewcontriller biến mất
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-    
+   
     func setUpNavigation(){
         // Custom back navigation
         let backImage = UIImage(named: "back")
@@ -130,8 +126,6 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let currentUserID = Auth.auth().currentUser?.uid, currentUser?.userId != currentUserID {
-            navigationController?.setNavigationBarHidden(false, animated: true)
-            setUpNavigation()
             return 1400
         }else{
             navigationController?.setNavigationBarHidden(true, animated: true)
@@ -179,6 +173,8 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
             cell.cellBackgroundView.addSubview(imgView)
             cell.cellBackgroundView.sendSubviewToBack(imgView)
             tableView.backgroundColor = .clear
+        }else{
+            cell.backBtn.isHidden = true
         }
         showLoading(isShow: false)
         return cell
@@ -209,6 +205,10 @@ extension ProfileViewController: UIPickerViewDataSource, UIPickerViewDelegate{
 }
 
 extension ProfileViewController: ProfileTableViewCellDelegate{
+    func backButton() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     
     func showMeValueChange(selectedGender: String) {
         tableView.reloadData()

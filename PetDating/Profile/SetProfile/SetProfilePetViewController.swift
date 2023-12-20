@@ -129,8 +129,6 @@ class SetProfilePetViewController: UIViewController {
             }
         }
     }
-    
-    
 }
 
 extension SetProfilePetViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{

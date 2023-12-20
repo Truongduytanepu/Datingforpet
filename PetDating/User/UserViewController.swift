@@ -62,7 +62,6 @@ class UserViewController: UIViewController, UICollectionViewDelegate {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        // Cấu hình UICollectionView, ví dụ: đăng ký cell tùy chỉnh
         collectionView.register(UINib(nibName: "TestCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TestCollectionViewCell")
         
         // Đổi layout của UICollectionView sang CustomCollectionViewLayout
@@ -123,10 +122,10 @@ class UserViewController: UIViewController, UICollectionViewDelegate {
             
             for (userId, userDict) in userDicts {
                 if userId == currentUserId {
-                    continue // Loại bỏ người dùng đang đăng nhập
+                    continue
                 }
                 
-                // Kiểm tra nếu người dùng hiện tại nằm trong danh sách followingIds hoặc danh sách notFollow
+                
                 if let currentUserInfo = userDicts[currentUserId],
                    let followingIds = currentUserInfo["followingIds"] as? [String],
                    let notFollowIds = currentUserInfo["notfollow"] as? [String] {
@@ -421,6 +420,10 @@ extension UserViewController: TestCollectionViewCellDelegate{
     }
 }
 extension UserViewController: ProfileTableViewCellDelegate{
+    func backButton() {
+        
+    }
+    
     func showMeValueChange(selectedGender: String) {
         if let currentUserId = currentUserId {
             let showMeRef = databaseRef.child("user").child(currentUserId).child("showMe")

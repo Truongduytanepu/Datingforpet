@@ -158,6 +158,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="google" title=""/>
+                                <connections>
+                                    <action selector="signInWithGoogle:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="LMd-tT-aDF"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wKw-33-NSd">
                                 <rect key="frame" x="165" y="529" width="100" height="40"/>
@@ -167,6 +170,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="apple-logo" title=""/>
+                                <connections>
+                                    <action selector="signInWithApple:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="ipx-cO-XDU"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfP-xS-wKo">
                                 <rect key="frame" x="310" y="529" width="100" height="40"/>
@@ -176,6 +182,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="facebook" title=""/>
+                                <connections>
+                                    <action selector="signInWithFacebook:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="N1N-DW-TRw"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OGT-vc-QMj">
                                 <rect key="frame" x="20" y="609" width="390" height="50"/>

@@ -16,6 +16,15 @@ struct UserBot {
     var uid: String
     var name: String
     var image: String
+    var lastMessageTimestamp: TimeInterval?
+
+    // Initializer with lastMessageTimestamp parameter
+    init(uid: String, name: String, image: String, lastMessageTimestamp: TimeInterval?) {
+        self.uid = uid
+        self.name = name
+        self.image = image
+        self.lastMessageTimestamp = lastMessageTimestamp
+    }
 }
 
 class MessageViewController: UIViewController{
@@ -55,7 +64,7 @@ class MessageViewController: UIViewController{
     
     // Lấy dữ liệu và thông tin người dùng
     func fetchDataMatchUser() {
-        let group = DispatchGroup() // Khởi tạo Dispatch Group
+        let group = DispatchGroup()
         showLoading(isShow: true)
         userMatched { userMatched in
             if let userMatched = userMatched {
@@ -66,30 +75,23 @@ class MessageViewController: UIViewController{
                         return
                     }
                     if let matches = snapshot.value as? [String: [String: Any]] {
-                        // Lặp qua tất cả matchid của matches
                         for (matchId, matchData) in matches {
                             if let participants = matchData["participants"] as? [String] {
-                                // Kiểm tra xem cả currentUser và userMatched đều tồn tại trong participants
                                 if participants.contains(self?.currentUser ?? "") && participants.contains(where: { userMatched.contains($0) }) {
-                                    // Thêm matchId vào danh sách
                                     self?.matchIds.append(matchId)
-                                    // Lặp qua danh sách participants
                                     for participant in participants {
                                         if participant == self?.currentUser {
-                                            continue // Bỏ qua người dùng đang đăng nhập hiện tại
+                                            continue
                                         }
-                                        
-                                        // Lấy thông tin người dùng từ Firebase và thêm vào danh sách người dùng
+
                                         group.enter()
-                                        self?.fetchUserBot(withUID: participant) { user in
+                                        self?.fetchUserBot(withUID: participant, matchId: matchId) { user in
                                             if let user = user {
                                                 DispatchQueue.main.async {
                                                     self?.users.append(user)
-                                                    // Khi dữ liệu của một người dùng đã được lấy, thoát khỏi Dispatch Group
                                                     group.leave()
                                                 }
                                             } else {
-                                                // Trong trường hợp xảy ra lỗi, thoát khỏi Dispatch Group
                                                 group.leave()
                                             }
                                         }
@@ -97,10 +99,10 @@ class MessageViewController: UIViewController{
                                 }
                             }
                         }
-                        
-                        // Sử dụng Dispatch Group để đợi cho đến khi tất cả dữ liệu đã được lấy
+
                         group.notify(queue: .main) {
-                            // Khi tất cả dữ liệu đã được lấy reloadData
+                            // Sort users based on lastMessageTimestamp in descending order
+                            self?.users.sort(by: { $0.lastMessageTimestamp ?? 0 > $1.lastMessageTimestamp ?? 0 })
                             self?.tableView.reloadData()
                             self?.showLoading(isShow: false)
                         }
@@ -116,6 +118,7 @@ class MessageViewController: UIViewController{
             }
         }
     }
+
     
     // lấy danh sách matchids
     func userMatched(completion: @escaping ([String]?) -> Void) {
@@ -131,7 +134,7 @@ class MessageViewController: UIViewController{
     }
     
     // Lấy thông tin người dùng bot từ firebase bằng uid
-    func fetchUserBot(withUID uid: String, completion: @escaping (UserBot?) -> Void) {
+    func fetchUserBot(withUID uid: String, matchId: String, completion: @escaping (UserBot?) -> Void) {
         let databaseUserRef = databaseRef.child("user").child(uid)
         databaseUserRef.observeSingleEvent(of: .value) { snapshot, error in
             if let error = error {
@@ -142,14 +145,29 @@ class MessageViewController: UIViewController{
             if let userData = snapshot.value as? [String: Any] {
                 let userName = userData["name"] as? String ?? ""
                 let userImage = userData["image"] as? String ?? ""
-                
-                let user = UserBot(uid: uid, name: userName, image: userImage)
-                completion(user)
+
+                self.fetchLastMessageTimestamp(matchId: matchId) { timestamp in
+                    let user = UserBot(uid: uid, name: userName, image: userImage, lastMessageTimestamp: timestamp)
+                    completion(user)
+                }
             } else {
                 completion(nil)
             }
         }
     }
+    
+    func fetchLastMessageTimestamp(matchId: String, completion: @escaping (TimeInterval?) -> Void) {
+        let messagesRef = databaseRef.child("matches").child(matchId).child("messages")
+        messagesRef.queryLimited(toLast: 1).observeSingleEvent(of: .value) { snapshot in
+            if let messageData = snapshot.children.allObjects.first as? DataSnapshot,
+               let messageTimestamp = messageData.childSnapshot(forPath: "timestamp").value as? TimeInterval {
+                completion(messageTimestamp)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
     
     // Lấy tin nhắn cuối cùng đẻ hiển thị lên giao diện
     func fetchLastMessageForMatch(matchId: String, completion: @escaping (String?) -> Void) {
